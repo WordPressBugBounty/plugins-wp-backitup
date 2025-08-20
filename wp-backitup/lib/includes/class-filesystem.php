@@ -624,7 +624,10 @@ class WPBackItUp_FileSystem {
 			if ($fromFile_handle = @fopen($from_filepath, 'r')) {
 				do  {
 					++$partNumber;
-					echo $partNumber;
+					if ( defined( 'WPBACKITUP__DEBUG' ) && WPBACKITUP__DEBUG ) {
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Debug output of integer counter
+						echo $partNumber;
+					}
 					// Seek to the correct position on the file pointer
 					fseek( $fromFile_handle, $offset );
 

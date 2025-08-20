@@ -26,7 +26,7 @@ class WPBackItUp_RecursiveFilterIterator extends RecursiveFilterIterator {
 	 *
 	 * @return bool
 	 */
-	public function accept()
+	public function accept(): bool
 	{
 		//wildcard search only used on folders
 		if ($this->isDir()){
@@ -44,7 +44,7 @@ class WPBackItUp_RecursiveFilterIterator extends RecursiveFilterIterator {
 	 * Filter dirs on exclude array
 	 * @return WPBackItUp_RecursiveFilterIterator
 	 */
-	public function getChildren()
+	public function getChildren(): ?RecursiveFilterIterator
 	{
 		return new WPBackItUp_RecursiveFilterIterator($this->getInnerIterator()->getChildren(), $this->exclude);
 	}

@@ -6,12 +6,12 @@
  * Description: Backup your content, settings, themes, plugins and media in just a few simple clicks.
  * Author: WPBackItUp
  * Author URI: https://www.wpbackitup.com
- * Version: 1.50
+ * Version: 2.0.0
  * Text Domain: wp-backitup
  *
- * License: GPL3
+ * License: GPLv2 or later
  *
- * Copyright 2012-2024 WPBackItUp  (email : support@wpbackitup.com)
+ * Copyright 2012-2025 WPBackItUp  (email : support@wpbackitup.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,15 +31,15 @@
 define( 'WPBACKITUP__NAMESPACE', 'wp-backitup' );
 define( 'WPBACKITUP__CLASSNAMESPACE', 'WPBackItUp' );
 
-define( 'WPBACKITUP__MAJOR_VERSION', 1);
-define( 'WPBACKITUP__MINOR_VERSION', 50);
+define( 'WPBACKITUP__MAJOR_VERSION', 2);
+define( 'WPBACKITUP__MINOR_VERSION', 0);
 define( 'WPBACKITUP__MAINTENANCE_VERSION', 0); //Dont forget to update version in header on WP release
 define( 'WPBACKITUP__BUILD_VERSION', 0); //Used for hotfix releases
 
 define( 'WPBACKITUP__VERSION',sprintf("%d.%d.%d.%d", WPBACKITUP__MAJOR_VERSION, WPBACKITUP__MINOR_VERSION,WPBACKITUP__MAINTENANCE_VERSION,WPBACKITUP__BUILD_VERSION));
 define( 'WPBACKITUP__DB_VERSION', 4); //DATABASE VERSION
 
-define( 'WPBACKITUP__DEBUG', false );
+define( 'WPBACKITUP__DEBUG', false );//verbose logging + unminified script
 
 //define( 'WPBACKITUP__TEST_RUN_HOURLY', true );
 define( 'WPBACKITUP__MINIMUM_WP_VERSION', '3.0' );
@@ -79,7 +79,7 @@ define( 'WPBACKITUP__VALID_FILENAME_REGEX', '([^\w\s\d\-_~,.;@\[\]\(\).])'); // 
 
 define( 'WPBACKITUP__BACKUP_GLOBAL_IGNORE_LIST','.htaccess');//comma separated list with no spaces after comma
 
-define( 'WPBACKITUP__TASK_TIMEOUT_SECONDS', 120);
+define( 'WPBACKITUP__TASK_TIMEOUT_SECONDS', 600);//600 = 10 minutes (increased for large plugin dirs)
 define( 'WPBACKITUP__SCRIPT_TIMEOUT_SECONDS', 900);//900 = 15 minutes
 
 define( 'WPBACKITUP__TASK_WAIT_SECONDS', 2);
@@ -257,12 +257,12 @@ function wpbackitup_dependency_notice() {
 			<div class="notice notice-error is-dismissible">
 				<p><?php
 					foreach ($notices  as $notice ) {
-						echo $notice .'<br/>';
+						echo esc_html($notice) .'<br/>';
 					}
 					?></p>
 			</div>
 			<?php
-			echo ob_get_clean();//flush the buffer
+			echo wp_kses_post(ob_get_clean());//flush the buffer
 		}
 	}
 }

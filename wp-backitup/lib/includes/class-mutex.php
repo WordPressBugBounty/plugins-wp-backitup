@@ -103,12 +103,14 @@ class WPBackItUp_Mutex {
 	    $fh = $this->fileHandle;
 	    WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File Handle:' .var_export($fh,true));
 
-        if (null!=$fh ) {
+        if (null!=$fh && is_resource($fh) && get_resource_type($fh) === 'stream') {
             $flock_rtn = @flock($fh, LOCK_UN);
             WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Flock Unlock:' .var_export($flock_rtn,true));
 
             $close_rtn = @fclose($fh);
             WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Close File:' .var_export($close_rtn,true));
+        } elseif (null!=$fh) {
+            WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File Handle is invalid - skipping flock/fclose operations');
         }
 
 	    //delete file & release reference

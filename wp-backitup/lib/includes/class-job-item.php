@@ -47,6 +47,7 @@ class WPBackItUp_Job_Item {
 	private $last_updated;
 	private $record_type;
 	private $item_status;
+	private $log_name;
 
 
 	private function __construct($db_item) {

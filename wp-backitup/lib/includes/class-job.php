@@ -238,6 +238,7 @@ class WPBackItUp_Job {
 		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin' );
 
 		$error_tasks = WPBackItUp_Job_Task::get_job_tasks($this->job_id,array(WPBackItUp_Job::ERROR));
+		if (!is_array($error_tasks)) $error_tasks = array();
 		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Active or Queued Tasks found' .count($error_tasks) );
 		if (count($error_tasks)>0) {
 			$this->setStatus(WPBackItUp_Job::ERROR);
@@ -246,6 +247,7 @@ class WPBackItUp_Job {
 
 		//get all the queued, active
 		$queues_active_tasks = WPBackItUp_Job_Task::get_job_tasks($this->job_id,array(WPBackItUp_Job::ACTIVE, WPBackItUp_Job::QUEUED));
+		if (!is_array($queues_active_tasks)) $queues_active_tasks = array();
 		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Active or Queued Tasks found' .count($queues_active_tasks) );
 		if (count($queues_active_tasks)>0) {
 			return false;
@@ -657,6 +659,7 @@ class WPBackItUp_Job {
 
 		$db= new WPBackItUp_DataAccess();
 		$jobs=$db->get_jobs_by_status($job_type,array(WPBackItUp_Job::COMPLETE,WPBackItUp_Job::CANCELLED,WPBackItUp_Job::ERROR, WPBackItUp_Job::DELETED));
+		if (!is_array($jobs)) $jobs = array();
 		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Jobs found:' . count($jobs));
 
 		return count( $jobs ) > 0 ? $jobs : false;
@@ -734,6 +737,7 @@ class WPBackItUp_Job {
 
 
 		$jobs = self::get_jobs_by_status($job_type,array(WPBackItUp_Job::DELETED,WPBackItUp_Job::ERROR,WPBackItUp_Job::CANCELLED));
+		if (!is_array($jobs)) $jobs = array();
 		WPBackItUp_Logger::log_info($log_name,__METHOD__,'Total finished jobs found:' .count($jobs));
 
 		/*   Delete everything but the successfully completed jobs */
@@ -756,6 +760,7 @@ class WPBackItUp_Job {
 
 		if (WPBackItUp_Job::BACKUP==$job_type) {
 			$jobs = self::get_jobs_by_status($job_type,array(WPBackItUp_Job::COMPLETE));
+			if (!is_array($jobs)) $jobs = array();
 			WPBackItUp_Logger::log_info($log_name,__METHOD__,'Total finished jobs found:' .count($jobs));
 
 			/*   Check all remaining to make sure there is a backup folder associated with each */
@@ -797,6 +802,7 @@ class WPBackItUp_Job {
 		//Now purge the ones that exceed the retention limit
 		/*------------------------------------------------------*/
 		$jobs = self::get_jobs_by_status($job_type,array(WPBackItUp_Job::COMPLETE));
+		if (!is_array($jobs)) $jobs = array();
 		WPBackItUp_Logger::log_info($log_name,__METHOD__,'Remaining Jobs After File Check:' .count($jobs));
 
 		if (is_array($jobs) && count($jobs)>0) {
@@ -877,9 +883,10 @@ class WPBackItUp_Job {
 
 		$db = new WPBackItUp_DataAccess();
 		$job_rows = $db->get_jobs_by_status($job_type,$job_status,$limit);
-		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Jobs found:' . count($job_rows));
-
+		
 		if (false===$job_rows) return false;
+		
+		WPBackItUp_Logger::log_info(self::DEFAULT_LOG_NAME,__METHOD__,'Jobs found:' . count($job_rows));
 
 		$jobs_list = array();
 		foreach ($job_rows as $key => $row) {

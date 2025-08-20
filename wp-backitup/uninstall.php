@@ -47,13 +47,29 @@ if( true===$delete_all ) {
 
 	/** Delete all the Plugin Options */
 	error_log('wp-backitup remove all settings');
+	// Plugin uninstall requires direct database access to remove all plugin settings
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Plugin uninstall requires direct database access to clean up plugin options
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall operations must execute immediately without caching
 	$wpdb->query( "DELETE FROM " . $wpdb->options . " WHERE option_name like '" .WPBACKITUP__NAMESPACE ."_%' " );
 
 	/** Remove all customer database tables **/
 	error_log('wp-backitup remove custom tables.');
+	// Plugin uninstall requires direct database access to remove all plugin tables
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Plugin uninstall requires direct database access to clean up plugin tables
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall operations must execute immediately without caching
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin manages cleanup of its own database tables during uninstall
 	$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "wpbackitup_job" );
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Plugin uninstall requires direct database access to clean up plugin tables
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall operations must execute immediately without caching
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin manages cleanup of its own database tables during uninstall
 	$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "wpbackitup_job_control" );
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Plugin uninstall requires direct database access to clean up plugin tables
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall operations must execute immediately without caching
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin manages cleanup of its own database tables during uninstall
 	$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "wpbackitup_job_tasks" );
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Plugin uninstall requires direct database access to clean up plugin tables
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall operations must execute immediately without caching
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin manages cleanup of its own database tables during uninstall
 	$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "wpbackitup_job_items" );
 
 	error_log('wp-backitup uninstall end');

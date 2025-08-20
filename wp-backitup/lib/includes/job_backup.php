@@ -1523,7 +1523,8 @@ function write_response_file_success() {
     $jsonResponse->backupDate = $current_job->getJobDate();
     $jsonResponse->backupDuration = $current_job->getJobDurationFormatted();
 
-	$jsonResponse->logFileExists = file_exists(WPBackItUp_Logger::getLogFilePath($backup_logname));
+	$log_file_path = WPBackItUp_Logger::getLogFilePath($backup_logname);
+	$jsonResponse->logFileExists = $log_file_path && file_exists($log_file_path);
 
 	write_response_file($jsonResponse);
 }

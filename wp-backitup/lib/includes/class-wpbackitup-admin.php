@@ -261,9 +261,67 @@ class WPBackitup_Admin {
 
 	    // Admin Stylesheet
 	    wp_register_style( "{$this->namespace}-admin", WPBACKITUP__PLUGIN_URL . "css/wp-backitup-admin.min.css", array(), $this->version, 'screen' );
-        wp_register_script( "{$this->namespace}-admin", WPBACKITUP__PLUGIN_URL . "js/wp-backitup-admin.min.js", array( 'jquery' ), $this->version, true );
+        
+        // Use unminified JS when WPBACKITUP__DEBUG is true or WordPress SCRIPT_DEBUG is enabled
+        $use_minified = !( (defined('WPBACKITUP__DEBUG') && WPBACKITUP__DEBUG) || (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) );
+        $admin_js_file = $use_minified ? 'js/wp-backitup-admin.min.js' : 'js/wp-backitup-admin.js';
+        wp_register_script( "{$this->namespace}-admin", WPBACKITUP__PLUGIN_URL . $admin_js_file, array( 'jquery' ), $this->version, true );
+
+        // Always localize script with nonces when registered
+        $translation_array = array(
+            'upload_file_size_exceed'  => __( 'The backup you have selected exceeds what your host allows you to upload.', 'wp-backitup' ),
+            'warning' => __('Warning', 'wp-backitup'),
+            'error' => __('Error', 'wp-backitup'),
+            'response' => __('Response', 'wp-backitup'),
+            'status' => __('Status', 'wp-backitup'),
+            'download' => __('Download', 'wp-backitup'),
+            'delete' => __('Delete', 'wp-backitup'),
+            'restore' => __('Restore', 'wp-backitup'),
+            'unexpected_err' => __('(JS997) Unexpected error', 'wp-backitup'),
+            'unexpected_err2' => __('(JS998) Unexpected error', 'wp-backitup'),
+            'unexpected_err3' => __('(JS999) An unexpected error has occurred', 'wp-backitup'),
+            'scheduled_saved' => __('Scheduled has been saved.', 'wp-backitup'),
+            'scheduled_not_saved' => __('Scheduled was not saved.', 'wp-backitup'),
+            'confirm_restore' => __('Are you sure you want to restore your site?', 'wp-backitup'),
+            'sure' => __('Are you sure ?', 'wp-backitup'),
+            'file_not_del' => __('This file cannot be delete!', 'wp-backitup'),
+            'view_log' => __('View Log', 'wp-backitup'),
+            'new_backup' => __('New Backup!', 'wp-backitup'),
+            'uploaded_backup' => __('Uploaded Backup', 'wp-backitup'),
+
+            // Backup list
+            'bl_backup_set' => __('WP BackItUp Backup Set:', 'wp-backitup'),
+            'bl_note_save' => __('Save', 'wp-backitup'),
+            'bl_note_saved_success' => __('Note Saved!', 'wp-backitup'),
+            'bl_note_placeholder' => __('add notes here', 'wp-backitup'),
+            'bl_backup_download_single' => __('Download a single zip file that contains all these files.', 'wp-backitup'),
+            'bl_backup_download' => __('Below are the archive files included in this backup set. Click the link to download.', 'wp-backitup'),
+            'bl_please_note' => __('* Please note that this is a ', 'wp-backitup'),
+            'bl_may_timeout' => __(' file which may timeout on some hosts.', 'wp-backitup'),
+
+            //Settings View
+            'settings_save_awesome' => __('Awesome!', 'wp-backitup'),
+            'settings_save_success_message' => __('Your settings has been successfully saved', 'wp-backitup'),
+            'settings_save_oops' => __('Oops...', 'wp-backitup'),
+            'settings_save_error_message' => __('Something went wrong', 'wp-backitup'),
+            'settings_no_database_table_to_filter' => __('No database table to filter', 'wp-backitup'),
+            'settings_select_database_table_to_filter' => __('Select Database table to filter', 'wp-backitup'),
+
+            //Nonces
+            'get_available_backups' => wp_create_nonce('get_available_backups'),
+            'get_backup_schedule' => wp_create_nonce('get_backup_schedule'),
+            'set_backup_schedule' => wp_create_nonce('set_backup_schedule'),
+            'backup_nonce' => wp_create_nonce('wpbackitup-core-ajax-nonce'),
+        );
+
+        wp_localize_script( "{$this->namespace}-admin", 'wpbackitup_local', $translation_array);
 
 	    wp_enqueue_style( "{$this->namespace}-admin" );
+	    
+	    // Always enqueue the admin script when on admin pages
+	    if (is_admin()) {
+	        wp_enqueue_script( "{$this->namespace}-admin" );
+	    }
 
 	    //Only load the JS and CSS when plugin is active
 	    if( !empty($_REQUEST['page']) && substr($_REQUEST['page'], 0, 11) === 'wp-backitup') {
@@ -277,62 +335,9 @@ class WPBackitup_Admin {
 
             add_filter( 'admin_body_class', 'add_admin_body_class');
 
-			//JavaScript Messages
-            $translation_array = array(
-                'upload_file_size_exceed'  => __( 'The backup you have selected exceeds what your host allows you to upload.', 'wp-backitup' ),
-                'warning' => __('Warning', 'wp-backitup'),
-                'error' => __('Error', 'wp-backitup'),
-                'response' => __('Response', 'wp-backitup'),
-                'status' => __('Status', 'wp-backitup'),
-                'download' => __('Download', 'wp-backitup'),
-                'delete' => __('Delete', 'wp-backitup'),
-                'restore' => __('Restore', 'wp-backitup'),
-                'unexpected_err' => __('(JS997) Unexpected error', 'wp-backitup'),
-                'unexpected_err2' => __('(JS998) Unexpected error', 'wp-backitup'),
-                'unexpected_err3' => __('(JS999) An unexpected error has occurred', 'wp-backitup'),
-                'scheduled_saved' => __('Scheduled has been saved.', 'wp-backitup'),
-                'scheduled_not_saved' => __('Scheduled was not saved.', 'wp-backitup'),
-                'confirm_restore' => __('Are you sure you want to restore your site?', 'wp-backitup'),
-                'sure' => __('Are you sure ?', 'wp-backitup'),
-                'file_not_del' => __('This file cannot be delete!', 'wp-backitup'),
-                'view_log' => __('View Log', 'wp-backitup'),
-                'new_backup' => __('New Backup!', 'wp-backitup'),
-                'uploaded_backup' => __('Uploaded Backup', 'wp-backitup'),
+            //Admin fonts - FontAwesome removed, now using WordPress Dashicons
 
-                // Backup list
-                'bl_backup_set' => __('WP BackItUp Backup Set:', 'wp-backitup'),
-                'bl_note_save' => __('Save', 'wp-backitup'),
-                'bl_note_saved_success' => __('Note Saved!', 'wp-backitup'),
-                'bl_note_placeholder' => __('add notes here', 'wp-backitup'),
-                'bl_backup_download_single' => __('Download a single zip file that contains all these files.', 'wp-backitup'),
-                'bl_backup_download' => __('Below are the archive files included in this backup set. Click the link to download.', 'wp-backitup'),
-                'bl_please_note' => __('* Please note that this is a ', 'wp-backitup'),
-                'bl_may_timeout' => __(' file which may timeout on some hosts.', 'wp-backitup'),
-
-                //Settings View
-                'settings_save_awesome' => __('Awesome!', 'wp-backitup'),
-                'settings_save_success_message' => __('Your settings has been successfully saved', 'wp-backitup'),
-                'settings_save_oops' => __('Oops...', 'wp-backitup'),
-                'settings_save_error_message' => __('Something went wrong', 'wp-backitup'),
-                'settings_no_database_table_to_filter' => __('No database table to filter', 'wp-backitup'),
-                'settings_select_database_table_to_filter' => __('Select Database table to filter', 'wp-backitup'),
-
-
-                //Nonces
-                'get_available_backups' => wp_create_nonce('get_available_backups'),
-                'get_backup_schedule' => wp_create_nonce('get_backup_schedule'),
-                'set_backup_schedule' => wp_create_nonce('set_backup_schedule'),
-            );
-
-		    wp_localize_script( "{$this->namespace}-admin", 'wpbackitup_local',$translation_array);
-
-            //Admin fonts
-		    wp_register_style( 'fontawesome-fonts', 'https://use.fontawesome.com/releases/v5.4.2/css/all.css' );
-		    wp_enqueue_style( 'fontawesome-fonts' );
-
-		    //Leave these for premium <2.0 customers
-	        wp_register_style( 'google-fonts', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' );
-            wp_enqueue_style( 'google-fonts' );
+		    //Leave these for premium <2.0 customers - FontAwesome removed
 
             // Jquery UI
             /// wp_register_style( "{$this->namespace}-jquery-ui-css", WPBACKITUP__PLUGIN_URL . "css/jquery-ui.min.css", array(), $this->version, 'screen' );
@@ -364,10 +369,13 @@ class WPBackitup_Admin {
             wp_enqueue_script($this->namespace . '_vue_keen_ui', WPBACKITUP__PLUGIN_URL . 'js/keen-ui.min.js', array(), $this->version, false);
             wp_enqueue_script($this->namespace . '_vue_pretty_checkbox_ui', WPBACKITUP__PLUGIN_URL . 'js/pretty-checkbox-vue.min.js', array(), $this->version, false);
             wp_enqueue_script($this->namespace . '_vue_pretty_element_ui', WPBACKITUP__PLUGIN_URL . 'js/element-ui.min.js', array(), $this->version, false);
-            wp_enqueue_script($this->namespace . '_vue_components', WPBACKITUP__PLUGIN_URL . 'js/wp-backitup-components.min.js', array(), $this->version, false);
+            
+            // Use unminified components JS when in debug mode
+            $components_js_file = $use_minified ? 'js/wp-backitup-components.min.js' : 'js/wp-backitup-components.js';
+            wp_enqueue_script($this->namespace . '_vue_components', WPBACKITUP__PLUGIN_URL . $components_js_file, array(), $this->version, false);
 
             // Loading tagit and core JS
-            wp_enqueue_script( "{$this->namespace}-admin" );
+            // Note: Main admin script now enqueued globally above
 
 
             //UPLOADS only
@@ -784,6 +792,9 @@ class WPBackitup_Admin {
 	public  function ajax_queue_manual_backup() {
 		// Check permissions
 		if (! self::is_authorized()) exit('Access denied.');
+		
+		// Verify nonce for CSRF protection
+		check_ajax_referer( 'wpbackitup-core-ajax-nonce', 'security' );
 
 		$events_logname='debug_events';
 		WPBackItUp_Logger::log_info($events_logname,__METHOD__,'Begin');
@@ -850,6 +861,9 @@ class WPBackitup_Admin {
 
         // Check permissions
         if (! self::is_authorized()) exit('Access denied.');
+        
+        // Verify nonce for CSRF protection
+        check_ajax_referer( 'wpbackitup-core-ajax-nonce', 'security' );
 
 	    $events_logname='debug_events';
 	    WPBackItUp_Logger::log_info($events_logname,__METHOD__,'Begin');
@@ -944,6 +958,11 @@ class WPBackitup_Admin {
 
 		// Check permissions
 		if (! self::is_authorized()) exit('Access denied.');
+		
+		// Verify nonce for CSRF protection
+		if ( ! isset( $_POST['security'] ) || ! wp_verify_nonce( $_POST['security'], 'wpbackitup-core-ajax-nonce' ) ) {
+			wp_die( 'Security check failed' );
+		}
 
 		$process_id = uniqid();
 		$job_type=WPBackItUp_Job::BACKUP;
@@ -983,6 +1002,12 @@ class WPBackitup_Admin {
      */
     public  function ajax_run_task() {
         @session_write_close();
+
+        // Check permissions
+        if (! self::is_authorized()) exit('Access denied.');
+        
+        // Verify nonce for CSRF protection
+        check_ajax_referer( 'wpbackitup-core-ajax-nonce', 'security' );
 
 	    $events_logname='debug_events';
 	    WPBackItUp_Logger::log_info($events_logname,__METHOD__, 'Ajax Run task Fired.');
@@ -1041,6 +1066,9 @@ class WPBackitup_Admin {
 
         // Check permissions
         if (! self::is_authorized()) exit('Access denied.');
+        
+        // Verify nonce for CSRF protection
+        check_ajax_referer( 'wpbackitup-core-ajax-nonce', 'security' );
 
 	    $events_logname='debug_events';
 	    WPBackItUp_Logger::log_info($events_logname,__METHOD__, 'User Permissions: ' .current_user_can( 'manage_options' ));
@@ -1067,6 +1095,12 @@ class WPBackitup_Admin {
     * Get single backup zip file list using job id
     */
     public function ajax_get_backup_zip_filelist(){
+        // Check permissions
+        if (! self::is_authorized()) exit('Access denied.');
+        
+        // Verify nonce for CSRF protection
+        check_ajax_referer( 'wpbackitup-core-ajax-nonce', 'security' );
+        
         if( !class_exists( 'WPBackItUp_FileSystem' ) ) {
             include_once 'class-filesystem.php';
         }
@@ -1096,6 +1130,12 @@ class WPBackitup_Admin {
     * Get a backup note
     */
     public function ajax_backup_get_note() {
+        // Check permissions
+        if (! self::is_authorized()) exit('Access denied.');
+        
+        // Verify nonce for CSRF protection
+        check_ajax_referer( 'wpbackitup-core-ajax-nonce', 'security' );
+        
         $job = WPBackItUp_Job::get_job_by_id($_POST['job_id']);
         $note = $job->getJobMetaValue('note');
         if ($note){
@@ -1109,6 +1149,12 @@ class WPBackitup_Admin {
     * Add note to backup
     */
     public function ajax_backup_add_note() {
+        // Check permissions
+        if (! self::is_authorized()) exit('Access denied.');
+        
+        // Verify nonce for CSRF protection
+        check_ajax_referer( 'wpbackitup-core-ajax-nonce', 'security' );
+        
         $job = WPBackItUp_Job::get_job_by_id($_POST['job_id']);
         $meta = $job->setJobMetaValue('note', $_POST['note']);
 
@@ -1135,6 +1181,12 @@ class WPBackitup_Admin {
     * Notification widget : delete
     */
     public function ajax_queue_delete_transient(){
+        // Check permissions
+        if (! self::is_authorized()) exit('Access denied.');
+        
+        // Verify nonce for CSRF protection
+        check_ajax_referer( 'wpbackitup-core-ajax-nonce', 'security' );
+        
         $admin_notices = get_transient( 'wpbackitup_admin_notices' );
         if( !(false === $admin_notices) ){
              array_shift($admin_notices);
@@ -1150,6 +1202,9 @@ class WPBackitup_Admin {
     public function plupload_action() {
         // Check permissions
         if (! self::is_authorized()) exit('Access denied.');
+        
+        // Verify nonce for CSRF protection
+        check_ajax_referer( 'wpbackitup-core-ajax-nonce', 'security' );
 
         include_once( WPBACKITUP__PLUGIN_PATH.'/lib/includes/class-filesystem.php' );
         include_once( WPBACKITUP__PLUGIN_PATH.'/lib/includes/handler_upload.php' );
@@ -1194,6 +1249,9 @@ class WPBackitup_Admin {
     {
 	    // Check permissions
 	    if (! self::is_authorized()) exit('Access denied.');
+	    
+	    // Verify nonce for CSRF protection
+	    check_ajax_referer( 'wpbackitup-core-ajax-nonce', 'security' );
 
 	    $delete_logname='debug_delete';
 
@@ -1242,6 +1300,9 @@ class WPBackitup_Admin {
 	{
 		// Check permissions
 		if (! self::is_authorized()) exit('Access denied.');
+		
+		// Verify nonce for CSRF protection
+		check_ajax_referer( 'wpbackitup-core-ajax-nonce', 'security' );
 
 		$delete_logname='debug_upload';
 
@@ -1328,6 +1389,8 @@ class WPBackitup_Admin {
      * Get all settings value
      */
     public function ajax_backup_get_settings(){
+        // Check permissions
+        if (! self::is_authorized()) exit('Access denied.');
 
     	$ut = new WPBackItUp_Usage();
     	$tracking_allowed = $ut->is_tracking_allowed();
@@ -1369,6 +1432,9 @@ class WPBackitup_Admin {
      * Set all settings
      */
     public function ajax_backup_set_settings(){
+        // Check permissions
+        if (! self::is_authorized()) exit('Access denied.');
+        
         check_ajax_referer( 'wpbackitup-core-ajax-nonce', 'security' );
 
         $debug_logname='wpb_debug';
@@ -2383,7 +2449,7 @@ class WPBackitup_Admin {
 			}
 
        } catch (Exception $e) {
-           exit ('WPBackItUp encountered an error during activation.</br>' .$e->getMessage());
+           exit( 'WPBackItUp encountered an error during activation.<br/>' . esc_html( $e->getMessage() ) );
        }
     }
 

@@ -1900,6 +1900,9 @@ class WPBackItUp_DataAccess {
 			$sql .= sprintf(" LIKE '%s%%'" ,$table_prefix);
 		}
 
+	// Database backup operations require direct access to INFORMATION_SCHEMA tables
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Backup plugin needs direct database access to retrieve table information
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Table metadata queries must be real-time for accurate backup
         $table_list = $wpdb->get_results($sql, ARRAY_N);
         $all_tables_name = array();
         foreach ($table_list as $key => $value) {
@@ -1921,6 +1924,10 @@ class WPBackItUp_DataAccess {
 
 	public function drop_table($table_name) {
 		global $wpdb;
+		// Backup cleanup operations require direct table dropping capability
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Backup plugin needs direct database access to drop temporary tables
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Table operations must execute immediately without caching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin manages temporary backup tables
 		return $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . $table_name );
 	}
 
@@ -1939,6 +1946,9 @@ class WPBackItUp_DataAccess {
 			,DB_NAME);
 
 
+		// Database backup operations require direct access to INFORMATION_SCHEMA for table statistics
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Backup plugin needs direct database access to retrieve table row counts
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Table statistics queries must be real-time for accurate backup sizing
 		$table_list = $wpdb->get_results($sql, ARRAY_N);
 
 		// Cycle through "$result" and put content into an array
@@ -1964,7 +1974,7 @@ class WPBackItUp_DataAccess {
 		$base_directory= $this->get_scalar('select @@basedir');
 
 		if (!empty($base_directory)){
-			$base_directory.='/bin/';
+			$base_directory = rtrim($base_directory, '/') . '/bin/';
 			WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'MySQL install path found:' .$base_directory);
 			return $base_directory;
 		}
@@ -1992,6 +2002,9 @@ class WPBackItUp_DataAccess {
 		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,$sql);
+		// Generic database query method for backup/restore operations
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Backup plugin requires direct database access for SQL execution
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Query results must not be cached for backup operations
 		$wpdb_result = $wpdb->query($sql);
 		//$last_query = $wpdb->last_query;
 		$last_error = $wpdb->last_error;
@@ -2017,6 +2030,9 @@ class WPBackItUp_DataAccess {
 		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,$sql);
+		// Database row retrieval for backup/restore operations
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Backup plugin requires direct database access for row retrieval
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Query results must not be cached for backup operations
 		$wpdb_result = $wpdb->get_row($sql);
 		$last_query = $wpdb->last_query;
 		$last_error = $wpdb->last_error;
@@ -2043,6 +2059,9 @@ class WPBackItUp_DataAccess {
 		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,$sql);
+		// Database results retrieval for backup/restore operations
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Backup plugin requires direct database access for results retrieval
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Query results must not be cached for backup operations
 		$wpdb_result = $wpdb->get_results($sql,$output);
 		//$last_query = $wpdb->last_query;
 		$last_error = $wpdb->last_error;
@@ -2069,6 +2088,9 @@ class WPBackItUp_DataAccess {
 		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Begin');
 
 		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,$sql);
+		// Database column retrieval for backup/restore operations
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Backup plugin requires direct database access for column retrieval
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Query results must not be cached for backup operations
 		$wpdb_result = $wpdb->get_col($sql,$column_index);
 		$last_error = $wpdb->last_error;
 

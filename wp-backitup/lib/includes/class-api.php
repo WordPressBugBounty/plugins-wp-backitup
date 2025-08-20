@@ -107,15 +107,25 @@ class WPBackItUp_API {
 		$action_array = explode( '::', $action );
 		$method_name  = end( $action_array );
 
+		WPBackItUp_Logger::log_info($this->log_name, __METHOD__, 'Authorization check for: ' . $method_name);
+		WPBackItUp_Logger::log_info($this->log_name, __METHOD__, 'User can manage_options: ' . (current_user_can( 'manage_options' ) ? 'true' : 'false'));
+		WPBackItUp_Logger::log_info($this->log_name, __METHOD__, 'Security parameter: ' . (isset($_REQUEST['security']) ? $_REQUEST['security'] : 'NOT SET'));
+
 		//Make sure user is admin
 		if ( ! current_user_can( 'manage_options' ) ) {
+			WPBackItUp_Logger::log_error($this->log_name, __METHOD__, 'Access Denied: User lacks manage_options capability');
 			throw new Exception( 'Access Denied(100)' );
 		}
 
-		if ( ! check_ajax_referer( $method_name, 'security', false ) ) {
+		$nonce_check = check_ajax_referer( $method_name, 'security', false );
+		WPBackItUp_Logger::log_info($this->log_name, __METHOD__, 'Nonce check result: ' . ($nonce_check ? 'PASS' : 'FAIL'));
+		
+		if ( ! $nonce_check ) {
+			WPBackItUp_Logger::log_error($this->log_name, __METHOD__, 'Access Denied: Nonce verification failed for method: ' . $method_name);
 			throw new Exception( 'Access Denied(200)' );
 		}
 
+		WPBackItUp_Logger::log_info($this->log_name, __METHOD__, 'Authorization successful for: ' . $method_name);
 		return true;
 	}
 

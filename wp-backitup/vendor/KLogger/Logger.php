@@ -181,7 +181,7 @@ class Logger
      */
     public function close()
     {
-        if ($this->fileHandle) {
+        if ($this->fileHandle && is_resource($this->fileHandle) && get_resource_type($this->fileHandle) === 'stream') {
             @fclose($this->fileHandle);
         }
     }
@@ -192,7 +192,7 @@ class Logger
      */
     public function __destruct()
     {
-        if ($this->fileHandle) {
+        if ($this->fileHandle && is_resource($this->fileHandle) && get_resource_type($this->fileHandle) === 'stream') {
             @fclose($this->fileHandle);
         }
     }
@@ -403,7 +403,8 @@ class Logger
         }
 
         foreach ($parts as $part => $value) {
-            $message = str_replace('{' . $part . '}', $value, $message);
+            $replacement = $value !== null ? $value : '';
+            $message = str_replace('{' . $part . '}', $replacement, $message);
         }
 
         return $message . PHP_EOL;
@@ -422,7 +423,7 @@ class Logger
     {
         $originalTime = microtime(true);
         $micro = sprintf("%06d", ($originalTime - floor($originalTime)) * 1000000);
-        $date = new DateTime(date('Y-m-d H:i:s.' . $micro, $originalTime));
+        $date = new DateTime(date('Y-m-d H:i:s.' . $micro, (int) $originalTime));
 
         return $date->format($this->options['dateFormat']);
     }

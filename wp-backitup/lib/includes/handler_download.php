@@ -121,6 +121,7 @@ if ( isset($_REQUEST['_wpnonce']) && !empty($_REQUEST['_wpnonce'])
 
                 while (!feof($handle) &&  (connection_status()==0) ) {
                     $buffer = fread($handle, $chunksize);
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Binary file data must not be escaped
                     echo $buffer;
                     @ob_flush();
                     @flush();

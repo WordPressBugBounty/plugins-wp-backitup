@@ -56,13 +56,13 @@ class WPBackItUp_Welcome {
 		?>
 		<h1 class="nav-tab-wrapper">
 			<a class="nav-tab <?php echo $selected == 'getting-started' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( network_admin_url( add_query_arg( array( 'page' => 'wp-backitup-about' ), 'admin.php' ) ) ); ?>">
-				<?php _e( 'Getting Started', 'wp-backitup' ); ?>
+				<?php esc_html_e( 'Getting Started', 'wp-backitup' ); ?>
 			</a>
 <!--			<a class="nav-tab --><?php //echo $selected == 'whats-new' ? 'nav-tab-active' : ''; ?><!--" href="--><?php //echo esc_url( network_admin_url( add_query_arg( array( 'page' => 'wp-backitup-about','tab'=>'whats-new'  ), 'admin.php' ) ) ); ?><!--">-->
 <!--				--><?php //_e( "What's New", 'wp-backitup'); ?>
 <!--			</a>-->
 			<a class="nav-tab <?php echo $selected == 'premium' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( network_admin_url( add_query_arg( array( 'page' => 'wp-backitup-about','tab'=>'premium' ), 'admin.php' ) ) ); ?>">
-				<?php _e( 'Premium Plugin', 'wp-backitup' ); ?>
+				<?php esc_html_e( 'Premium Plugin', 'wp-backitup' ); ?>
 			</a>
 		</h1>
 		<?php
@@ -114,10 +114,12 @@ class WPBackItUp_Welcome {
 
 		?>
 		<div id="wpbackitup-header">
-			<img class="wpbackitup-badge" src="<?php echo WPBACKITUP__PLUGIN_URL . 'images/wpbackitup-logo.png'; ?>" alt="<?php _e( 'WPBackItUp', 'wp-backitup' ); ?>" / >
-			<h1><?php printf( __( 'Welcome to WPBackItUp %s', 'wp-backitup' ), $this->display_version ); ?></h1>
+			<img class="wpbackitup-badge" src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . 'images/wpbackitup-logo.png' ); ?>" alt="<?php esc_attr_e( 'WPBackItUp', 'wp-backitup' ); ?>" / >
+			<!-- translators: %s: Plugin version number -->
+			<h1><?php printf( esc_html__( 'Welcome to WPBackItUp %s', 'wp-backitup' ), esc_html( $this->display_version ) ); ?></h1>
 			<p class="about-text">
-				<?php printf( __( 'Thank you for updating to the latest version! WPBackItUp %s is ready to make sure your site is backed up quickly, securely, and completely!', 'wp-backitup' ), $this->display_version ); ?>
+				<!-- translators: %s: Plugin version number -->
+				<?php printf( esc_html__( 'Thank you for updating to the latest version! WPBackItUp %s is ready to make sure your site is backed up quickly, securely, and completely!', 'wp-backitup' ), esc_html( $this->display_version ) ); ?>
 			</p>
 		</div>
 		<?php
@@ -133,25 +135,25 @@ class WPBackItUp_Welcome {
 	private function getting_started_screen() {
 		global $WPBackitup;
 		?>
-			<p class="about-description"><?php _e( 'Use the tips below to get started using WPBackItUp and you will be <em>backing it up</em> in no time!', 'wp-backitup' ); ?></p>
+			<p class="about-description"><?php printf( wp_kses_post( __( 'Use the tips below to get started using WPBackItUp and you will be <em>backing it up</em> in no time!', 'wp-backitup' ) ) ); ?></p>
 
 			<div class="changelog">
-				<h2><?php _e( 'Backups', 'wp-backitup' );?></h2>
-				<h3><?php _e( 'Creating Your First Backup', 'wp-backitup' );?></h3>
+				<h2><?php esc_html_e( 'Backups', 'wp-backitup' );?></h2>
+				<h3><?php esc_html_e( 'Creating Your First Backup', 'wp-backitup' );?></h3>
 				<div class="feature-section">
 					<div class="feature-section-media">
-						<img src="<?php echo WPBACKITUP__PLUGIN_URL . 'images/backup_inprogress.png'?>" />
+						<img src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . 'images/backup_inprogress.png' ); ?>" />
 					</div>
 					<div class="feature-section-content">
-						<h4><a href="<?php echo network_admin_url( 'admin.php?page=wp-backitup-backup' ) ?>"><?php printf( __( 'One Click &rarr; Backup', 'wp-backitup' )); ?></a></h4>
-						<p><?php printf( __( 'The backup menu option is the starting point for all things related to backups. To create your first backup, simply click the <em>Backup</em> button and WPBackItUp will backup your entire site. This includes your database, plugins, themes, and even all your media files.', 'wp-backitup' )); ?></p>
+						<h4><a href="<?php echo esc_url( network_admin_url( 'admin.php?page=wp-backitup-backup' ) ); ?>"><?php printf( esc_html__( 'One Click &rarr; Backup', 'wp-backitup' )); ?></a></h4>
+						<p><?php printf( wp_kses_post( __( 'The backup menu option is the starting point for all things related to backups. To create your first backup, simply click the <em>Backup</em> button and WPBackItUp will backup your entire site. This includes your database, plugins, themes, and even all your media files.', 'wp-backitup' ) ) ); ?></p>
 
 
-						<h4><?php _e( 'Download Backups', 'wp-backitup' );?></h4>
-						<p><?php _e( 'Downloading your backups is simple too. Click the backup you want to download from the <em>Available backups</em> listing. Then click the part of the backup you want to download (database, plugins, themes, media files).  Or download the entire backup in just one click.', 'wp-backitup' );?></p>
+						<h4><?php esc_html_e( 'Download Backups', 'wp-backitup' );?></h4>
+						<p><?php printf( wp_kses_post( __( 'Downloading your backups is simple too. Click the backup you want to download from the <em>Available backups</em> listing. Then click the part of the backup you want to download (database, plugins, themes, media files).  Or download the entire backup in just one click.', 'wp-backitup' ) ) ); ?></p>
 
 						<div class="feature-section-media-inline">
-							<img src="<?php echo WPBACKITUP__PLUGIN_URL . 'images/single-file-download.png'?>" />
+							<img src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . 'images/single-file-download.png' ); ?>" />
 						</div>
 
 					</div>
@@ -159,28 +161,28 @@ class WPBackItUp_Welcome {
 			</div>
 
 			<div class="changelog">
-				<h2><?php _e( 'Automatic  Backups', 'wp-backitup' );?></h2>
+				<h2><?php esc_html_e( 'Automatic  Backups', 'wp-backitup' );?></h2>
 				<div class="feature-section">
 					<div class="feature-section-media">
-						<img src="<?php echo WPBACKITUP__PLUGIN_URL . 'images/backup_scheduler.png'; ?>"/>
+						<img src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . 'images/backup_scheduler.png' ); ?>"/>
 					</div>
 					<div class="feature-section-content">
-						<h4><?php _e( 'Schedule your Backups (Premium Only)','wp-backitup' );?></h4>
-						<p><?php _e( 'Schedule your backups to run any day of the week, or all of them. With our flexible backup scheduler just select the days of the week you want your backup to run and WPBackItUp will handle the rest.', 'wp-backitup' );?></p>
+						<h4><?php esc_html_e( 'Schedule your Backups (Premium Only)','wp-backitup' );?></h4>
+						<p><?php esc_html_e( 'Schedule your backups to run any day of the week, or all of them. With our flexible backup scheduler just select the days of the week you want your backup to run and WPBackItUp will handle the rest.', 'wp-backitup' );?></p>
 
-						<h4><?php _e( 'Backup Notifications', 'wp-backitup' );?></h4>
-						<p><?php  _e( 'Want to get notified every time a backup finishes? Just add your email address to the notification section in backup settings. WPBackItUp even supports multiple email addresses so add as many as you like.', 'wp-backitup' );?></p>
+						<h4><?php esc_html_e( 'Backup Notifications', 'wp-backitup' );?></h4>
+						<p><?php esc_html_e( 'Want to get notified every time a backup finishes? Just add your email address to the notification section in backup settings. WPBackItUp even supports multiple email addresses so add as many as you like.', 'wp-backitup' );?></p>
 						<div class="feature-section-media-inline">
-							<img src="<?php echo WPBACKITUP__PLUGIN_URL . 'images/email_notifications.png'?>" />
+							<img src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . 'images/email_notifications.png' ); ?>" />
 						</div>
 
-						<h4><?php _e( 'Backup Retention', 'wp-backitup' ); ?></h4>
-						<p><?php  _e( 'Concerned about the amount of storage space used for backups? Use the <em>backup retention</em> setting to tell WPBackItUp how many backups you want to keep. WPBackItUp will make sure only the newest backups are saved.', 'wp-backitup' ); ?></p>
+						<h4><?php esc_html_e( 'Backup Retention', 'wp-backitup' ); ?></h4>
+						<p><?php printf( wp_kses_post( __( 'Concerned about the amount of storage space used for backups? Use the <em>backup retention</em> setting to tell WPBackItUp how many backups you want to keep. WPBackItUp will make sure only the newest backups are saved.', 'wp-backitup' ) ) ); ?></p>
 
 					</div>
 
 					<div class="feature-section-media">
-						<img src="<?php echo WPBACKITUP__PLUGIN_URL . 'images/backup_retention.png'?>" />
+						<img src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . 'images/backup_retention.png' ); ?>" />
 					</div>
 
 
@@ -188,20 +190,20 @@ class WPBackItUp_Welcome {
 			</div>
 
 			<div class="changelog">
-				<h2><?php _e( 'Restore', 'wp-backitup' );?></h2>
+				<h2><?php esc_html_e( 'Restore', 'wp-backitup' );?></h2>
 				<div class="feature-section">
 					<div class="feature-section-media">
-						<img src="<?php echo WPBACKITUP__PLUGIN_URL . 'images/restore_success.png'; ?>"/>
+						<img src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . 'images/restore_success.png' ); ?>"/>
 					</div>
 					<div class="feature-section-content">
-						<h4><?php printf( __( 'One Click &rarr; Restore (Premium Only)', 'wp-backitup' )); ?></a></h4>
-						<p><?php _e( 'We hope you never need to restore your site but if you do then WPBackItUp has you covered.  And with our one-click restore feature, restoring your site is just as easy as backing it up.', 'wp-backitup' );?></p>
+						<h4><?php printf( esc_html__( 'One Click &rarr; Restore (Premium Only)', 'wp-backitup' )); ?></h4>
+						<p><?php esc_html_e( 'We hope you never need to restore your site but if you do then WPBackItUp has you covered.  And with our one-click restore feature, restoring your site is just as easy as backing it up.', 'wp-backitup' );?></p>
 
-						<h4><?php printf( __( 'Migration &amp; Cloning (Premium Only)', 'wp-backitup' )); ?></a></h4>
-						<p><?php _e( 'Need to migrate your site to a new host or want to clone a copy to your staging server?  WPBackItUp does that too!  Just upload your backups to your new WordPress install and restore it using the one-click restore feature.', 'wp-backitup' );?></p>
+						<h4><?php printf( esc_html__( 'Migration &amp; Cloning (Premium Only)', 'wp-backitup' )); ?></h4>
+						<p><?php esc_html_e( 'Need to migrate your site to a new host or want to clone a copy to your staging server?  WPBackItUp does that too!  Just upload your backups to your new WordPress install and restore it using the one-click restore feature.', 'wp-backitup' );?></p>
 
 						<div class="feature-section-media-inline">
-							<img src="<?php echo WPBACKITUP__PLUGIN_URL . 'images/upload_success.png'?>" />
+							<img src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . 'images/upload_success.png' ); ?>" />
 						</div>
 					</div>
 
@@ -209,17 +211,18 @@ class WPBackItUp_Welcome {
 			</div>
 
 			<div class="changelog">
-				<h2><?php _e( 'Need Help?', 'wp-backitup' );?></h2>
+				<h2><?php esc_html_e( 'Need Help?', 'wp-backitup' );?></h2>
 				<div class="feature-section">
 					<div class="feature-section-media">
-						<img src="<?php echo WPBACKITUP__PLUGIN_URL . 'images/support_page.png'; ?>"/>
+						<img src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . 'images/support_page.png' ); ?>"/>
 					</div>
 
 					<div class="feature-section-content">
-						<h4><?php _e( 'Phenomenal Support','wp-backitup' );?></h4>
-						<?php echo( WPBackItUp_Utility::get_anchor_with_utm(__('Get support','wp-backitup'),'support/home' ,'getting+started','support',WPBACKITUP__SUPPORTSITE_URL))?>
+						<h4><?php esc_html_e( 'Phenomenal Support','wp-backitup' );?></h4>
+						<?php echo wp_kses_post( WPBackItUp_Utility::get_anchor_with_utm( esc_html__('Get support','wp-backitup'), 'support/home', 'getting+started', 'support', WPBACKITUP__SUPPORTSITE_URL ) ); ?>
 
-						<p><?php printf(__( 'We do our best to provide the best product possible but if you run into trouble then support is just a few clicks away. To get help or if you have a question, simply open a ticket using our %s.', 'wp-backitup'),WPBackItUp_Utility::get_anchor_with_utm(__('support portal','wp-backitup'),'support/home' ,'getting+started','support',WPBACKITUP__SUPPORTSITE_URL));?></p>
+						<!-- translators: %s: Link to support portal -->
+						<p><?php printf( esc_html__( 'We do our best to provide the best product possible but if you run into trouble then support is just a few clicks away. To get help or if you have a question, simply open a ticket using our %s.', 'wp-backitup'), wp_kses_post( WPBackItUp_Utility::get_anchor_with_utm( esc_html__('support portal','wp-backitup'), 'support/home', 'getting+started', 'support', WPBACKITUP__SUPPORTSITE_URL ) ) );?></p>
 
 <!--						<h4>--><?php //_e( 'Need Even Faster Support?', 'wp-backitup' );?><!--</h4>-->
 <!--						<p>--><?php //printf(__( 'Our %s system is there for customers that need faster or more in-depth assistance.', 'wp-backitup' ),WPBackItUp_Utility::get_anchor_with_utm(__('Priority Support','wp-backitup'),'priority-support' ,'getting+started','support',WPBACKITUP__SECURESITE_URL));?><!--</p>-->
@@ -227,25 +230,28 @@ class WPBackItUp_Welcome {
 <!--						<h4>--><?php //_e( 'Need Help Migrating Your Site to a New Host?', 'wp-backitup' );?><!--</h4>-->
 <!--						<p>--><?php //printf(__( 'Our Site Migration experts have helped hundreds of WPBackItUp customers migrate their sites and now you can take advantage of that experience with our WordPress %s. Let our experts save you time and headaches by doing it for you!', 'wp-backitup' ),WPBackItUp_Utility::get_anchor_with_utm(__('Site Migration Service','wp-backitup'),'wordpress-site-migration' ,'getting+started','support',WPBACKITUP__SECURESITE_URL));?><!--</p>-->
 
-						<h4><?php _e( 'Tools Tools Tools...','wp-backitup' );?></h4>
-						<p><?php printf(__( 'Great web sites and businesses are built with great tools and products that help you achieve your goals as efficiently as possible.  My team and I  have spent a tremendous amount of time and effort evaluating tools to help run our WordPress powered website and business. And now you can leverage all our hard work and my 20+ years experience in the software industry with a simple mouse click.  The %s is a growing list of tools and products we use at WPBackItUp to enhance our websites and businesses.  Please feel free to use our experience to empower, enhance and accelerate your sites and businesses.', 'wp-backitup' ),WPBackItUp_Utility::get_anchor_with_utm(__('WPBackItUp Tools List','wp-backitup'),'tools' ,'getting+started','tools',WPBACKITUP__SECURESITE_URL));?></p>
+						<h4><?php esc_html_e( 'Tools Tools Tools...','wp-backitup' );?></h4>
+						<!-- translators: %s: Link to WPBackItUp Tools List -->
+						<p><?php printf( esc_html__( 'Great web sites and businesses are built with great tools and products that help you achieve your goals as efficiently as possible.  My team and I  have spent a tremendous amount of time and effort evaluating tools to help run our WordPress powered website and business. And now you can leverage all our hard work and my 20+ years experience in the software industry with a simple mouse click.  The %s is a growing list of tools and products we use at WPBackItUp to enhance our websites and businesses.  Please feel free to use our experience to empower, enhance and accelerate your sites and businesses.', 'wp-backitup' ), wp_kses_post( WPBackItUp_Utility::get_anchor_with_utm( esc_html__('WPBackItUp Tools List','wp-backitup'), 'tools', 'getting+started', 'tools', WPBACKITUP__SECURESITE_URL ) ) );?></p>
 
 
 				</div>
 			</div>
 
 			<div class="changelog">
-				<h2><?php _e( 'Stay Up to Date', 'wp-backitup' );
+				<h2><?php esc_html_e( 'Stay Up to Date', 'wp-backitup' );
 					//TODO: Add subscription page to wpbackitup site
 					?></h2>
 				<div class="feature-section two-col">
 					<div class="col">
-						<h4><?php _e( 'Get Notified of New Releases','wp-backitup' );?></h4>
-						<p><?php printf(__( 'New features that make WPBackItUp even more powerful are released often. Subscribe to our newsletter to stay up to date with our latest releases. %s to ensure you do not miss a release!', 'wp-backitup' ),WPBackItUp_Utility::get_anchor_with_utm(__('Sign up now','wp-backitup'),'subscribe' ,'getting+started','subscribe',WPBACKITUP__SECURESITE_URL));?></p>
+						<h4><?php esc_html_e( 'Get Notified of New Releases','wp-backitup' );?></h4>
+						<!-- translators: %s: Link to newsletter signup -->
+						<p><?php printf( esc_html__( 'New features that make WPBackItUp even more powerful are released often. Subscribe to our newsletter to stay up to date with our latest releases. %s to ensure you do not miss a release!', 'wp-backitup' ), wp_kses_post( WPBackItUp_Utility::get_anchor_with_utm( esc_html__('Sign up now','wp-backitup'), 'subscribe', 'getting+started', 'subscribe', WPBACKITUP__SECURESITE_URL ) ) );?></p>
 					</div>
 					<div class="col">
-						<h4><?php _e( 'Get Alerted About New Tutorials', 'wp-backitup' );?></h4>
-						<p><?php printf(__( '%s to hear about the latest tutorials that explain how to take WPBackItUp further.', 'wp-backitup' ),WPBackItUp_Utility::get_anchor_with_utm(__('Sign up now','wp-backitup'),'subscribe' ,'getting+started','subscribe',WPBACKITUP__SECURESITE_URL));?></p>
+						<h4><?php esc_html_e( 'Get Alerted About New Tutorials', 'wp-backitup' );?></h4>
+						<!-- translators: %s: Link to newsletter signup -->
+						<p><?php printf( esc_html__( '%s to hear about the latest tutorials that explain how to take WPBackItUp further.', 'wp-backitup' ), wp_kses_post( WPBackItUp_Utility::get_anchor_with_utm( esc_html__('Sign up now','wp-backitup'), 'subscribe', 'getting+started', 'subscribe', WPBACKITUP__SECURESITE_URL ) ) );?></p>
 					</div>
 
 				</div>
@@ -264,50 +270,51 @@ class WPBackItUp_Welcome {
 	 */
 	private function whats_new_screen() {
 		?>
-			<p class="about-description"><?php printf( __( 'Below are just a few highlights for version %s. ', 'wp-backitup' ), $this->display_version); ?></p>
+			<!-- translators: %s: Plugin version number -->
+			<p class="about-description"><?php printf( esc_html__( 'Below are just a few highlights for version %s. ', 'wp-backitup' ), esc_html( $this->display_version ) ); ?></p>
 
 			<div class="changelog">
-				<h2><?php _e( 'New Features', 'wp-backitup' );?></h2>
+				<h2><?php esc_html_e( 'New Features', 'wp-backitup' );?></h2>
 				<div class="feature-section">
 					<div class="feature-section-media">
-						<img src="<?php echo WPBACKITUP__PLUGIN_URL . 'images/active_plugins_1.14.png'; ?>"/>
+						<img src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . 'images/active_plugins_1.14.png' ); ?>"/>
 					</div>
 					<div class="feature-section-content">
-						<h4><?php _e( 'WPBackItUp Community Edition', 'wp-backitup' );?></h4>
-						<p><?php _e( 'In version 1.14 we decided to do some important housekeeping we have wanted to do for quite some time now.  This housekeeping does not include any new features but it does lay the necessary groundwork for major improvements in the future.', 'wp-backitup' );?></p>
-						<p><?php _e( 'The most important and noticeable change to you is that we decided to split the WPBackItUp plugin into two plugins: WPBackItUp Community Edition(CE) and WPBackItUp Premium.   The Community Edition or CE plugin, is the version we offer for free via the WordPress.org repository.  The premium plugin is the one you must purchase via www.wpbackitup.com that provides additional features. If you are receiving this email, you have purchased the premium plugin.', 'wp-backitup' );?></p>
-						<p><?php _e( 'We decided to make this split for a number of technical reasons but the most important to you is that we want to be able to release Premium features separate from the CE updates.  With the two versions bundled into a single plugin we were forced to release updates to both sets of customers on the same schedule.  With this split we are now able to release updates to the CE  plugin much more frequently and with less impact to our premium customers.', 'wp-backitup' );?></p>
+						<h4><?php esc_html_e( 'WPBackItUp Community Edition', 'wp-backitup' );?></h4>
+						<p><?php esc_html_e( 'In version 1.14 we decided to do some important housekeeping we have wanted to do for quite some time now.  This housekeeping does not include any new features but it does lay the necessary groundwork for major improvements in the future.', 'wp-backitup' );?></p>
+						<p><?php esc_html_e( 'The most important and noticeable change to you is that we decided to split the WPBackItUp plugin into two plugins: WPBackItUp Community Edition(CE) and WPBackItUp Premium.   The Community Edition or CE plugin, is the version we offer for free via the WordPress.org repository.  The premium plugin is the one you must purchase via www.wpbackitup.com that provides additional features. If you are receiving this email, you have purchased the premium plugin.', 'wp-backitup' );?></p>
+						<p><?php esc_html_e( 'We decided to make this split for a number of technical reasons but the most important to you is that we want to be able to release Premium features separate from the CE updates.  With the two versions bundled into a single plugin we were forced to release updates to both sets of customers on the same schedule.  With this split we are now able to release updates to the CE  plugin much more frequently and with less impact to our premium customers.', 'wp-backitup' );?></p>
 					</div>
 
 				</div>
 			</div>
 
 			<div class="changelog">
-				<h2><?php _e( 'Previous Release Highlights', 'wp-backitup' );?></h2>
+				<h2><?php esc_html_e( 'Previous Release Highlights', 'wp-backitup' );?></h2>
 				<div class="feature-section three-col">
 					<div class="col">
-						<h4><?php _e( 'Support Center Enhancements', 'wp-backitup' );?></h4>
-						<p><?php _e( 'We have made major enhancements to the support center that will allow us to make our world class support even better.  You are now able to <em>view, download</em> and <em>delete</em> the log files we use to help troubleshoot problems with your site. This is an important addition because sometimes customer sites are so crippled by hosting issues, hackers or bad plugins, that they are unable to send us their logs files.  Now if that ever happens to you, they can easily be downloaded and emailed to support. ', 'wp-backitup' );?></p>
+						<h4><?php esc_html_e( 'Support Center Enhancements', 'wp-backitup' );?></h4>
+						<p><?php printf( wp_kses_post( __( 'We have made major enhancements to the support center that will allow us to make our world class support even better.  You are now able to <em>view, download</em> and <em>delete</em> the log files we use to help troubleshoot problems with your site. This is an important addition because sometimes customer sites are so crippled by hosting issues, hackers or bad plugins, that they are unable to send us their logs files.  Now if that ever happens to you, they can easily be downloaded and emailed to support. ', 'wp-backitup' ) ) ); ?></p>
 					</div>
 					<div class="col">
-						<h4><?php _e( 'Cleanup Supporting Zip Files', 'wp-backitup' );?></h4>
-						<p><?php _e( 'WPBackItUp now does an even better job of conserving space used on your host.  When you select the <em>Cleanup Supporting Zip Files</em>  setting, WPBackItUp will remove the supporting zip files that were used to create your backup.', 'wp-backitup' );?></p>
+						<h4><?php esc_html_e( 'Cleanup Supporting Zip Files', 'wp-backitup' );?></h4>
+						<p><?php printf( wp_kses_post( __( 'WPBackItUp now does an even better job of conserving space used on your host.  When you select the <em>Cleanup Supporting Zip Files</em>  setting, WPBackItUp will remove the supporting zip files that were used to create your backup.', 'wp-backitup' ) ) ); ?></p>
 					</div>
 					<div class="col">
-						<h4><?php _e( 'Email  Notifications', 'wp-backitup' );?></h4>
-						<p><?php _e( 'WPBackItUp now supports multiple email addresses for backup notifications. Using the WPBackItUp Settings page add multiple email addresses to the <em>Email Notifications</em> setting and all will receive notification emails when your backups complete.', 'wp-backitup' );?></p>
+						<h4><?php esc_html_e( 'Email  Notifications', 'wp-backitup' );?></h4>
+						<p><?php printf( wp_kses_post( __( 'WPBackItUp now supports multiple email addresses for backup notifications. Using the WPBackItUp Settings page add multiple email addresses to the <em>Email Notifications</em> setting and all will receive notification emails when your backups complete.', 'wp-backitup' ) ) ); ?></p>
 					</div>
 					<div class="clear">
 						<div class="col">
-							<h4><?php _e( 'Maximum Zip File Size', 'wp-backitup' );?></h4>
-							<p><?php _e( "Over the years we have found that some hosting providers enforce strict limitations on the size of your backup archives.  When this happens you might see backup errors, or more commonly backup jobs appear to never finish.  To combat this challenge we have added the <em>Maximum Zip File Size</em> setting.  This setting tells WPBackItUp when to stop adding files to a backup archive and create a new one.  Don't worry WPBackItUp won't miss any files, it will just add them to a new backup archive.", 'wp-backitup' );?></p>
+							<h4><?php esc_html_e( 'Maximum Zip File Size', 'wp-backitup' );?></h4>
+							<p><?php printf( wp_kses_post( __( "Over the years we have found that some hosting providers enforce strict limitations on the size of your backup archives.  When this happens you might see backup errors, or more commonly backup jobs appear to never finish.  To combat this challenge we have added the <em>Maximum Zip File Size</em> setting.  This setting tells WPBackItUp when to stop adding files to a backup archive and create a new one.  Don't worry WPBackItUp won't miss any files, it will just add them to a new backup archive.", 'wp-backitup' ) ) ); ?></p>
 						</div>
 					</div>
 				</div>
 
 			<div class="return-to-dashboard">
-				<?php _e( 'Want to see the entire changelog?', 'wp-backitup' ); ?> &mdash;
-				<a href="<?php echo esc_url( network_admin_url( add_query_arg( array( 'page' => 'wp-backitup-about','tab'=>'changelog' ), 'admin.php' ) )); ?>"><?php _e( 'View the Full Changelog', 'wp-backitup' ); ?></a>
+				<?php esc_html_e( 'Want to see the entire changelog?', 'wp-backitup' ); ?> &mdash;
+				<a href="<?php echo esc_url( network_admin_url( add_query_arg( array( 'page' => 'wp-backitup-about','tab'=>'changelog' ), 'admin.php' ) )); ?>"><?php esc_html_e( 'View the Full Changelog', 'wp-backitup' ); ?></a>
 			</div>
 		<?php
 	}
@@ -336,9 +343,9 @@ class WPBackItUp_Welcome {
 	private function changelog_screen() {
 		?>
 			<div class="changelog">
-				<h2><?php _e( 'Full Changelog', 'wp-backitup' );?></h2>
+				<h2><?php esc_html_e( 'Full Changelog', 'wp-backitup' );?></h2>
 				<div class="feature-section">
-					<?php echo $this->parse_readme(); ?>
+					<?php echo wp_kses_post( $this->parse_readme() ); ?>
 				</div>
 			</div>
 		<?php
@@ -356,7 +363,7 @@ class WPBackItUp_Welcome {
 	private function premium_screen() {
 		global $WPBackitup;
 		?>
-			<h2><?php _e( 'Take a look at what you get with premium!', 'wp-backitup' );?></h2>
+			<h2><?php esc_html_e( 'Take a look at what you get with premium!', 'wp-backitup' );?></h2>
 
 			<!-- TABLE -->
 			<section class="wpbackitup-features-table">
@@ -364,96 +371,96 @@ class WPBackItUp_Welcome {
 					<table class="table">
 						<thead>
 						<tr>
-							<td><?php _e( 'FEATURES', 'wp-backitup' ); ?></td>
-							<td><?php _e('FREE', 'wp-backitup' ); ?></td>
-							<td><?php _e('PREMIUM', 'wp-backitup' ); ?></td>
+							<td><?php esc_html_e( 'FEATURES', 'wp-backitup' ); ?></td>
+							<td><?php esc_html_e('FREE', 'wp-backitup' ); ?></td>
+							<td><?php esc_html_e('PREMIUM', 'wp-backitup' ); ?></td>
 						</tr>
 						</thead>
 						<tbody>
 						<tr>
-							<td><?php _e('Complete Backup (Database, Themes, Plugins &amp; Media Files)', 'wp-backitup' ); ?> </td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
+							<td><?php esc_html_e('Complete Backup (Database, Themes, Plugins &amp; Media Files)', 'wp-backitup' ); ?> </td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
-							<td><?php _e('Compressed Backups (Zip Format)', 'wp-backitup' ); ?></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
+							<td><?php esc_html_e('Compressed Backups (Zip Format)', 'wp-backitup' ); ?></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
-							<td><?php _e('Download Backups', 'wp-backitup' ); ?></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
+							<td><?php esc_html_e('Download Backups', 'wp-backitup' ); ?></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
-							<td><?php _e('Directory Filters', 'wp-backitup' ); ?></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
+							<td><?php esc_html_e('Directory Filters', 'wp-backitup' ); ?></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
-							<td><?php _e('Database Table Filters', 'wp-backitup' ); ?></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
+							<td><?php esc_html_e('Database Table Filters', 'wp-backitup' ); ?></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
-							<td><?php _e('Single File Database Export', 'wp-backitup' ); ?></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
+							<td><?php esc_html_e('Single File Database Export', 'wp-backitup' ); ?></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
-							<td><?php _e('Purge Old Backups', 'wp-backitup' ); ?></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
+							<td><?php esc_html_e('Purge Old Backups', 'wp-backitup' ); ?></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
-							<td><?php _e('Cleanup Work Files &amp; Logs', 'wp-backitup' ); ?></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
+							<td><?php esc_html_e('Cleanup Work Files &amp; Logs', 'wp-backitup' ); ?></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
-							<td><?php _e('Backup Notifications via Email', 'wp-backitup' ); ?></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
+							<td><?php esc_html_e('Backup Notifications via Email', 'wp-backitup' ); ?></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
-							<td><strong><?php _e('One Click Restore</strong>', 'wp-backitup' ); ?></td>
-							<td class="times"><i class="fas fa-times" aria-hidden="true"></i></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
+							<td><strong><?php esc_html_e('One Click Restore', 'wp-backitup' ); ?></strong></td>
+							<td class="times"><span class="dashicons dashicons-no" aria-hidden="true"></span></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
-							<td><?php _e('Single File Backup', 'wp-backitup' ); ?></td>
-							<td class="times"><i class="fas fa-times" aria-hidden="true"></i></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
+							<td><?php esc_html_e('Single File Backup', 'wp-backitup' ); ?></td>
+							<td class="times"><span class="dashicons dashicons-no" aria-hidden="true"></span></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
-							<td><?php _e('Scheduled Backups', 'wp-backitup' ); ?></td>
-							<td class="times"><i class="fas fa-times" aria-hidden="true"></i></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
+							<td><?php esc_html_e('Scheduled Backups', 'wp-backitup' ); ?></td>
+							<td class="times"><span class="dashicons dashicons-no" aria-hidden="true"></span></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
-							<td><?php _e('Import Backups', 'wp-backitup' ); ?></td>
-							<td class="times"><i class="fas fa-times" aria-hidden="true"></i></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
+							<td><?php esc_html_e('Import Backups', 'wp-backitup' ); ?></td>
+							<td class="times"><span class="dashicons dashicons-no" aria-hidden="true"></span></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
 						</tr>
 <!--						<tr>-->
 <!--							<td>--><?php //_e('Encrypted Backups', 'wp-backitup' ); ?><!--</td>-->
-<!--							<td class="times"><i class="fas fa-times" aria-hidden="true"></i></td>-->
-<!--							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>-->
+<!--							<td class="times"><span class="dashicons dashicons-no" aria-hidden="true"></span></td>-->
+<!--							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>-->
 <!--						</tr>-->
 						<tr>
-							<td><?php _e('Premium Support', 'wp-backitup' ); ?></td>
-							<td class="times"><i class="fas fa-times" aria-hidden="true"></i></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
+							<td><?php esc_html_e('Premium Support', 'wp-backitup' ); ?></td>
+							<td class="times"><span class="dashicons dashicons-no" aria-hidden="true"></span></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
-							<td><?php _e('Product Updates', 'wp-backitup' ); ?></td>
-							<td class="times"><i class="fas fa-times" aria-hidden="true"></i></td>
-							<td class="check"><i class="fas fa-check" aria-hidden="true"></i></td>
+							<td><?php esc_html_e('Product Updates', 'wp-backitup' ); ?></td>
+							<td class="times"><span class="dashicons dashicons-no" aria-hidden="true"></span></td>
+							<td class="check"><span class="dashicons dashicons-yes" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
 							<td></td>
 							<td></td>
-							<td class="link"><?php echo( WPBackItUp_Utility::get_anchor_with_utm(__('GET PREMIUM','wp-backitup'),'pricing-purchase' ,'premium+plugin','feature+compare',WPBACKITUP__SECURESITE_URL))?></td>
+							<td class="link"><?php echo wp_kses_post( WPBackItUp_Utility::get_anchor_with_utm( esc_html__('GET PREMIUM','wp-backitup'), 'pricing-purchase', 'premium+plugin', 'feature+compare', WPBACKITUP__SECURESITE_URL ) ); ?></td>
 						</tr>
 						</tbody>
 					</table>

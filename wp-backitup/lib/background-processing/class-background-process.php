@@ -202,6 +202,9 @@ if ( ! class_exists( 'WPBackItUp_Background_Process' ) ) {
 
 			$key = $this->identifier . '_batch_%';
 
+			// Background process queue management requires direct database access
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Background processing requires direct database queries for queue management
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Queue status checks must be real-time, caching inappropriate
 			$count = $wpdb->get_var( $wpdb->prepare( "
 			SELECT COUNT(*)
 			FROM {$table}
@@ -277,6 +280,9 @@ if ( ! class_exists( 'WPBackItUp_Background_Process' ) ) {
 
 			$key = $this->identifier . '_batch_%';
 
+			// Background process batch retrieval requires direct database access
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Background processing requires direct database queries for batch management
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Batch retrieval must be real-time, caching inappropriate
 			$query = $wpdb->get_row( $wpdb->prepare( "
 			SELECT *
 			FROM {$table}

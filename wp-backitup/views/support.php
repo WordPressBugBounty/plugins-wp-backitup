@@ -66,20 +66,20 @@ class WPBackItUp_Support {
 		?>
 		<h1 class="nav-tab-wrapper">
 			<a class="nav-tab <?php echo $selected == 'support' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( network_admin_url( add_query_arg( array( 'page' => 'wp-backitup-support' ), 'admin.php' ) ) ); ?>">
-				<?php _e( 'Support', 'wp-backitup' ); ?>
+				<?php esc_html_e( 'Support', 'wp-backitup' ); ?>
 			</a>
 			<a class="nav-tab <?php echo $selected == 'send-logs' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( network_admin_url( add_query_arg( array('page' => 'wp-backitup-support','tab'  => 'send-logs'), 'admin.php' ) ) ); ?>">
-				<?php _e( "Send Logs", 'wp-backitup' ); ?>
+				<?php esc_html_e( "Send Logs", 'wp-backitup' ); ?>
 			</a>
 
 			<a class="nav-tab <?php echo $selected == 'download-logs' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( network_admin_url( add_query_arg( array('page' => 'wp-backitup-support','tab'  => 'download-logs'), 'admin.php' ) ) ); ?>">
-				<?php _e( "Download Logs", 'wp-backitup' ); ?>
+				<?php esc_html_e( "Download Logs", 'wp-backitup' ); ?>
 			</a>
 
 			<?php //hide tab unless navigate directly
 			if ( $selected == 'advanced') : ?>
 				<a class="nav-tab <?php echo $selected == 'advanced' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( network_admin_url( add_query_arg( array('page' => 'wp-backitup-support','tab'  => 'advanced'), 'admin.php' ) ) ); ?>">
-					<?php _e( "Advanced", 'wp-backitup' ); ?>
+					<?php esc_html_e( "Advanced", 'wp-backitup' ); ?>
 				</a>
 			<?php endif; ?>
 
@@ -100,10 +100,10 @@ class WPBackItUp_Support {
 		?>
 
 		<div id="wpbackitup-header">
-			<img class="wpbackitup-badge" src="<?php echo WPBACKITUP__PLUGIN_URL . 'images/wpbackitup-logo.png'; ?>" alt="<?php _e( 'WPBackItUp', 'wp-backitup' ); ?>" / >
-			<h1><?php  _e( 'Support Center', 'wp-backitup' ); ?></h1>
+			<img class="wpbackitup-badge" src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . 'images/wpbackitup-logo.png' ); ?>" alt="<?php esc_attr_e( 'WPBackItUp', 'wp-backitup' ); ?>" / >
+			<h1><?php  esc_html_e( 'Support Center', 'wp-backitup' ); ?></h1>
 			<p class="about-text">
-				<?php printf( __("Welcome to the WPBackItUp support center. If you have any questions or run into any trouble with WPBackItUp then you've come to the right place.", 'wp-backitup' ) ); ?>
+				<?php printf( esc_html__("Welcome to the WPBackItUp support center. If you have any questions or run into any trouble with WPBackItUp then you've come to the right place.", 'wp-backitup' ) ); ?>
 			</p>
 		</div>
 		<?php
@@ -120,25 +120,25 @@ class WPBackItUp_Support {
 	private function support_screen() {
 	?>
 
-		<p class="about-description"><?php _e( 'To streamline support requests and better serve you, we utilize a support ticket system. Every support request is assigned a unique ticket number which you can use to track progress and responses via our support portal. For your convenience we provide a complete archive and history of all your support requests. All correspondence is via email so a valid email address is required to submit a ticket. ', 'wp-backitup' ); ?></p>
+		<p class="about-description"><?php esc_html_e( 'To streamline support requests and better serve you, we utilize a support ticket system. Every support request is assigned a unique ticket number which you can use to track progress and responses via our support portal. For your convenience we provide a complete archive and history of all your support requests. All correspondence is via email so a valid email address is required to submit a ticket. ', 'wp-backitup' ); ?></p>
 		<div class="changelog">
 				<div class="feature-section">
 					<div class="feature-section-media">
-						<img src="<?php echo WPBACKITUP__PLUGIN_URL . 'images/support_portal.png'?>" />
+						<img src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . 'images/support_portal.png' )?>" />
 					</div>
 
 					<div class="feature-section-content">
-						<h4><a href="http://support.wpbackitup.com/support/home" target="_blank"><?php printf( __( 'Search &rarr; Knowledge base', 'wp-backitup' )); ?></a></h4>
-						<p><?php printf( __( "Want to search our entire documentation library, all our how to articles and even our faq's in one shot?  Just type your question into the knowledge base search bar and we'll show you everything we have for that topic.", 'wp-backitup' )); ?></p>
+						<h4><a href="http://support.wpbackitup.com/support/home" target="_blank"><?php printf( esc_html__( 'Search &rarr; Knowledge base', 'wp-backitup' )); ?></a></h4>
+						<p><?php printf( esc_html__( "Want to search our entire documentation library, all our how to articles and even our faq's in one shot?  Just type your question into the knowledge base search bar and we'll show you everything we have for that topic.", 'wp-backitup' )); ?></p>
 
-						<h4><a href="http://support.wpbackitup.com/support/tickets/new" target="_blank"><?php printf( __( 'New &rarr; Ticket', 'wp-backitup' )); ?></a></h4>
-						<p><?php printf( __( 'Need to open a new support ticket? Just click the link above.  Please provide as much detail as possible so we can best assist you.', 'wp-backitup' )); ?></p>
+						<h4><a href="http://support.wpbackitup.com/support/tickets/new" target="_blank"><?php printf( esc_html__( 'New &rarr; Ticket', 'wp-backitup' )); ?></a></h4>
+						<p><?php printf( esc_html__( 'Need to open a new support ticket? Just click the link above.  Please provide as much detail as possible so we can best assist you.', 'wp-backitup' )); ?></p>
 
-						<h4><a href="http://support.wpbackitup.com/support/tickets" target="_blank"><?php printf( __( 'Check &rarr; Status', 'wp-backitup' )); ?></a></h4>
-						<p><?php _e( 'To check ticket status or update a previously submitted ticket you will first need to login. Our support portal provides a history of your current and past support requests complete with responses.', 'wp-backitup' );?></p>
+						<h4><a href="http://support.wpbackitup.com/support/tickets" target="_blank"><?php printf( esc_html__( 'Check &rarr; Status', 'wp-backitup' )); ?></a></h4>
+						<p><?php esc_html_e( 'To check ticket status or update a previously submitted ticket you will first need to login. Our support portal provides a history of your current and past support requests complete with responses.', 'wp-backitup' );?></p>
 
-						<h4><a href="<?php echo esc_url( network_admin_url( add_query_arg( array('page' => 'wp-backitup-support','tab'  => 'send-logs'), 'admin.php' ))) ?>"><?php printf( __( 'Send &rarr; Logs', 'wp-backitup' )); ?></a></h4>
-						<p><?php _e( 'Sometimes it may be necessary for you to send your log files to support. If that ever happens, just click the link above and we will show you what to do.', 'wp-backitup' );?></p>
+						<h4><a href="<?php echo esc_url( network_admin_url( add_query_arg( array('page' => 'wp-backitup-support','tab'  => 'send-logs'), 'admin.php' ))) ?>"><?php printf( esc_html__( 'Send &rarr; Logs', 'wp-backitup' )); ?></a></h4>
+						<p><?php esc_html_e( 'Sometimes it may be necessary for you to send your log files to support. If that ever happens, just click the link above and we will show you what to do.', 'wp-backitup' );?></p>
 
 					</div>
 				</div>
@@ -172,7 +172,7 @@ class WPBackItUp_Support {
 
 		?>
 
-		<p class="about-description"><?php _e( 'If you have been asked by support to send your log files then you are in the right spot.', 'wp-backitup' ); ?></p>
+		<p class="about-description"><?php esc_html_e( 'If you have been asked by support to send your log files then you are in the right spot.', 'wp-backitup' ); ?></p>
 
 		<div class="changelog">
 
@@ -181,40 +181,42 @@ class WPBackItUp_Support {
 						<!-- Display Settings widget -->
 
 							<div class="widget">
-								<form action="<?php echo get_admin_url(),"admin-post.php"; ?>" method="post" id="<?php echo $namespace; ?>-support-form">
+								<form action="<?php echo esc_url( get_admin_url() . "admin-post.php" ); ?>" method="post" id="<?php echo esc_attr( $namespace ); ?>-support-form">
 									<?php wp_nonce_field($namespace . "-support-form"); ?>
 
-									<h3 class="promo"><i class="fas fa-envelope"></i> <?php _e('Send Logs to Support', 'wp-backitup') ?></h3>
-									<p><b><?php _e('This form should only be used when working with support.', 'wp-backitup') ?></b></p>
-									<p><?php printf(__('Please make sure to open a support ticket via WPBackItUp <a href="%s" target="_blank"> support portal.</a> before using this form.', 'wp-backitup'), esc_url('http://support.wpbackitup.com/support/tickets/new')); ?></p>
-									<p><em><?php _e('The ticket id you receive from your support request should be entered in the ticket id field below.', 'wp-backitup'); ?></em></p>
-									<p><input <?php echo($disabled) ; ?> type="text" name="support_email" class="wpbiu-form-input" value="<?php echo $support_email; ?>" size="30" placeholder="<?php _e('your email address','wp-backitup')?>">
+									<h3 class="promo"><span class="dashicons dashicons-email-alt"></span> <?php esc_html_e('Send Logs to Support', 'wp-backitup') ?></h3>
+									<p><b><?php esc_html_e('This form should only be used when working with support.', 'wp-backitup') ?></b></p>
+									<p><?php 
+						/* translators: %s: URL to support portal */
+						printf(wp_kses_post(__('Please make sure to open a support ticket via WPBackItUp <a href="%s" target="_blank"> support portal.</a> before using this form.', 'wp-backitup')), esc_url('http://support.wpbackitup.com/support/tickets/new')); ?></p>
+									<p><em><?php esc_html_e('The ticket id you receive from your support request should be entered in the ticket id field below.', 'wp-backitup'); ?></em></p>
+									<p><input <?php echo esc_attr( $disabled ) ; ?> type="text" name="support_email" class="wpbiu-form-input" value="<?php echo esc_attr( $support_email ); ?>" size="30" placeholder="<?php esc_attr_e('your email address','wp-backitup')?>">>
 										<?php
 										if ( false !== ( $msg = get_transient('error-support-email') ) && $msg)
 										{
-											echo '<span class="error">'.$msg.'</span>';
+											echo '<span class="error">'. esc_html( $msg ) .'</span>';
 											delete_transient('error-support-email');
 										}
 										?>
 									</p>
 
 									<p>
-										<input <?php echo($disabled) ; ?> type="text" name="support_ticket_id" class="wpbiu-form-input" value="<?php echo get_transient('support_ticket_id'); ?>" size="30" placeholder="<?php _e('support ticket id','wp-backitup')?>">
+										<input <?php echo esc_attr( $disabled ) ; ?> type="text" name="support_ticket_id" class="wpbiu-form-input" value="<?php echo esc_attr( get_transient('support_ticket_id') ); ?>" size="30" placeholder="<?php esc_attr_e('support ticket id','wp-backitup')?>"
 										<?php
 										if ( false !== ( $msg = get_transient('error-support-ticket') ) && $msg)
 										{
-											echo '<span class="error">'.$msg.'</span>';
+											echo '<span class="error">'. esc_html( $msg ) .'</span>';
 											delete_transient('error-support-ticket');
 										}
 										?>
 									</p>
 
 									<div>
-									<textarea <?php echo($disabled); ?> name="support_body" class="wpbiu-support-textarea"  placeholder="<?php _e('problem description or additional information','wp-backitup')?>"><?php echo get_transient('support_body'); ?></textarea>
+									<textarea <?php echo esc_attr( $disabled ); ?> name="support_body" class="wpbiu-support-textarea"  placeholder="<?php esc_attr_e('problem description or additional information','wp-backitup')?>"><?php echo esc_textarea( get_transient('support_body') ); ?></textarea>
 										<?php
 										if ( false !== ( $msg = get_transient('error-support-body') ) && $msg)
 										{
-											echo '<span class="error">'.$msg.'</span>';
+											echo '<span class="error">'. esc_html( $msg ) .'</span>';
 											delete_transient('error-support-body');
 										}
 										?>
@@ -224,13 +226,13 @@ class WPBackItUp_Support {
 
 									<p>
 									<div class="submit">
-										<input <?php echo($disabled) ; ?> type="submit" name="send_ticket" class="button-primary" value="<?php _e("Send Logs", 'wp-backitup') ?>" />
+										<input <?php echo esc_attr( $disabled ) ; ?> type="submit" name="send_ticket" class="button-primary" value="<?php esc_attr_e("Send Logs", 'wp-backitup') ?>" />
 
 										<?php
-										echo apply_filters( 'wpbackitup_show_active',
-											'<div><em>*' . sprintf(__('Premium customers receive priority support.', 'wp-backitup')) . '</em></div>'
+										echo wp_kses_post( apply_filters( 'wpbackitup_show_active',
+											'<div><em>*' . sprintf(esc_html__('Premium customers receive priority support.', 'wp-backitup')) . '</em></div>'
 											,false
-										);
+										) );
 										?>
 									</div>
 									</p>
@@ -238,14 +240,14 @@ class WPBackItUp_Support {
 									<?php //Successful email
 									if (!empty($_GET["s"]) && '2' == $_GET["s"]) : ?>
 										<div class="isa_error">
-											<?php _e( 'Support email could not be sent!', 'wp-backitup' ); ?>
+											<?php esc_html_e( 'Support email could not be sent!', 'wp-backitup' ); ?>
 										</div>
 									<?php endif; ?>
 
 									<?php //Successful email
 									if (!empty($_GET["s"]) && '1' == $_GET["s"]) : ?>
 									<div class="isa_success">
-										<?php _e( 'Support email sent successfully!', 'wp-backitup' ); ?>
+										<?php esc_html_e( 'Support email sent successfully!', 'wp-backitup' ); ?>
 									</div>
 									<?php endif; ?>
 
@@ -268,7 +270,7 @@ class WPBackItUp_Support {
 	 */
 	private function download_logs_screen() {
 		?>
-        <form id = "download_backup" name="download_backup" action="<?php echo get_admin_url(),"admin-post.php"; ?>" method="post">
+        <form id = "download_backup" name="download_backup" action="<?php echo esc_url( get_admin_url() . "admin-post.php" ); ?>" method="post">
 	    	<input type="hidden" name="action" value="download_backup">
 	    	<input type="hidden" id="backup_file" name="backup_file" value="">
             <input type="hidden" id="download_logs" name="download_logs" value="1">
@@ -276,7 +278,7 @@ class WPBackItUp_Support {
     	</form>
         <?php
         $WPBackitupListTable = new WPBackitup_Download_Logs();
-  		echo '</pre><div class="wrap"><p class="about-description">'.__( 'Download logs file manually.', 'wp-backitup' ).'</p>';
+  		echo '</pre><div class="wrap"><p class="about-description">'.esc_html__( 'Download logs file manually.', 'wp-backitup' ).'</p>';
 		
   		$WPBackitupListTable->prepare_items(); 
 		echo '<form method="post"><input type="hidden" name="page" value="download_logs_screen">';
@@ -307,7 +309,7 @@ class WPBackItUp_Support {
 	global $WPBackitup;
 	?>
 
-		<p class="about-description"><?php _e( 'Content goes here', 'wp-backitup' ); ?></p>
+		<p class="about-description"><?php esc_html_e( 'Content goes here', 'wp-backitup' ); ?></p>
 
 		<div class="advanced-content">
 			<div class="feature-section">

@@ -358,10 +358,10 @@ class WPBackItUp_Usage {
 
 			echo '<div class="updated"><p>';
 			//echo sprintf( __( 'Allow WPBackItUp to anonymously track how this plugin is used so we can make it better? Only data needed to help support and improve this plugin will ever be collected. No sensitive data is tracked and we\'ll never share this data with anyone.', 'wp-backitup' ) );
-			echo sprintf( __( 'Allow WPBackItUp to anonymously track how this plugin is used so we can make it better?', 'wp-backitup' ) );
-			echo '&nbsp;<a href="' . esc_url( $optin_url ) . '" class="button-secondary">' . __( 'Allow', 'wp-backitup' ) . '</a>';
-			echo '&nbsp;<a href="' . esc_url( $optout_url ) . '" class="button-secondary">' . __( 'Do not allow', 'wp-backitup' ) . '</a>';
-			echo sprintf( __( '<br/>Only data needed to help support and improve this plugin will ever be collected. No sensitive data is tracked and we\'ll never share this data with anyone.', 'wp-backitup' ) );
+			echo esc_html( __( 'Allow WPBackItUp to anonymously track how this plugin is used so we can make it better?', 'wp-backitup' ) );
+			echo '&nbsp;<a href="' . esc_url( $optin_url ) . '" class="button-secondary">' . esc_html( __( 'Allow', 'wp-backitup' ) ) . '</a>';
+			echo '&nbsp;<a href="' . esc_url( $optout_url ) . '" class="button-secondary">' . esc_html( __( 'Do not allow', 'wp-backitup' ) ) . '</a>';
+			echo wp_kses_post( __( '<br/>Only data needed to help support and improve this plugin will ever be collected. No sensitive data is tracked and we\'ll never share this data with anyone.', 'wp-backitup' ) );
 			echo '</p></div>';
 		}
 	}

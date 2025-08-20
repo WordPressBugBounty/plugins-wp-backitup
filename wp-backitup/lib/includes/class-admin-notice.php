@@ -252,7 +252,11 @@ if ( ! class_exists( 'WPBackitup_Admin_Notice' ) ) {
 					);
 
 					WPBackItUp_Admin_Bar::set_notices_on();
-					printf( '<div id="%3$s" class="%1$s"><p>%2$s</p></div>', trim( implode( ' ', $class ) ), $notice['content'], "wpbackitup-$id" );
+					printf( '<div id="%3$s" class="%1$s"><p>%2$s</p></div>', 
+						esc_attr( trim( implode( ' ', $class ) ) ), 
+						wp_kses_post( $notice['content'] ), 
+						esc_attr( "wpbackitup-$id" ) 
+					);
 
 				}
 			}
@@ -497,7 +501,7 @@ if ( ! class_exists( 'WPBackitup_Admin_Notice' ) ) {
 			$temp_dismiss = $_POST['temp_dismiss'];
 			$updated_at = $_POST['updated_at'];
 
-			echo $this->dismiss_notice( $id , $temp_dismiss , $updated_at );
+			echo esc_html( $this->dismiss_notice( $id , $temp_dismiss , $updated_at ) );
 			exit;
 
 		}

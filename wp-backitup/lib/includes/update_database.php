@@ -206,6 +206,10 @@ function wpbackitup_update_database_routine_4($log_name) {
 			";
 	WPBackItUp_Logger::log_info($log_name,__METHOD__,'UPDATE SQL:'. $sql);
 
+	// Database update operations require direct table modification for plugin schema changes
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Plugin update requires direct database access for schema modifications
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema changes must execute immediately without caching
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin manages its own table schema updates
 	$wpdb_result = $wpdb->query($sql);
 	$last_error = $wpdb->last_error;
 	if ($wpdb_result === FALSE && !empty($last_error)) {
@@ -246,6 +250,10 @@ function wpbackitup_create_custom_tables($log_name){
 	//drop the original job table
 	$sql = "DROP TABLE IF EXISTS $old_job_table;";
 	WPBackItUp_Logger::log_info($log_name,__METHOD__,'Drop OLD Job Table:' .$sql);
+	// Database cleanup operations require direct table dropping during plugin updates
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Plugin update requires direct database access to drop obsolete tables
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Table drops must execute immediately without caching
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin manages its own table cleanup during updates
 	$wpdb_result = $wpdb->query($sql);
 	$last_error = $wpdb->last_error;
 	if ($wpdb_result === FALSE && !empty($last_error)) {
@@ -258,6 +266,10 @@ function wpbackitup_create_custom_tables($log_name){
 	//drop the existing job table
 	$sql = "DROP TABLE IF EXISTS $job_control_table;";
 	WPBackItUp_Logger::log_info($log_name,__METHOD__,'Drop Job Table:' .$sql);
+	// Database cleanup operations require direct table dropping during plugin updates
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Plugin update requires direct database access to drop obsolete tables
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Table drops must execute immediately without caching
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin manages its own table cleanup during updates
 	$wpdb_result = $wpdb->query($sql);
 	$last_error = $wpdb->last_error;
 	if ($wpdb_result === FALSE && !empty($last_error)) {
@@ -269,6 +281,10 @@ function wpbackitup_create_custom_tables($log_name){
 	//drop the existing Task table
 	$sql = "DROP TABLE IF EXISTS $job_tasks_table;";
 	WPBackItUp_Logger::log_info($log_name,__METHOD__,'Drop Task Table:' .$sql);
+	// Database cleanup operations require direct table dropping during plugin updates
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Plugin update requires direct database access to drop obsolete tables
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Table drops must execute immediately without caching
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin manages its own table cleanup during updates
 	$wpdb_result = $wpdb->query($sql);
 	$last_error = $wpdb->last_error;
 	if ($wpdb_result === FALSE && !empty($last_error)) {
@@ -280,6 +296,10 @@ function wpbackitup_create_custom_tables($log_name){
 	//drop the existing item table
 	$sql = "DROP TABLE IF EXISTS $job_items_table;";
 	WPBackItUp_Logger::log_info($log_name,__METHOD__,'Drop Job Table:' .$sql);
+	// Database cleanup operations require direct table dropping during plugin updates
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Plugin update requires direct database access to drop obsolete tables
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Table drops must execute immediately without caching
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin manages its own table cleanup during updates
 	$wpdb_result = $wpdb->query($sql);
 	$last_error = $wpdb->last_error;
 	if ($wpdb_result === FALSE && !empty($last_error)) {

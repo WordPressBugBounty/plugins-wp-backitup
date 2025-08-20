@@ -699,7 +699,7 @@ class WPBackItUp_Backup {
 					$batch_counter++;
 					$file_size=ceil($file->getSize()/1024);//round up
 					WPBackItUp_Logger::log_info($inventory_logname,__METHOD__, 'Add File: ' .$batch_counter . ' ' .$file_path);
-					$sql.= "(".$job_id .", '" .$group_id."', '" .utf8_encode($file_path) ."', ".$file_size .",'" . current_time('mysql') ."'),";
+					$sql.= "(".$job_id .", '" .$group_id."', '" .mb_convert_encoding($file_path, 'UTF-8', 'ISO-8859-1') ."', ".$file_size .",'" . current_time('mysql') ."'),";
 				}
 			}
 
@@ -781,7 +781,7 @@ class WPBackItUp_Backup {
 				//$file_size=ceil(filesize($file_path) /1024);//round up
 
 				//get rid of root path and utf8 encode
-				$file_path = utf8_encode(str_replace($root_path,'',$file_path));
+				$file_path = mb_convert_encoding(str_replace($root_path,'',$file_path), 'UTF-8', 'ISO-8859-1');
 
 				WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Add File: ' .$batch_counter . ' ' .$file_path);
 				$sql.= "(".$job_id .", '" .$group_id."', '" .$file_path ."', ".$file_size .",'" . current_time('mysql') . "' ),";
@@ -981,7 +981,7 @@ class WPBackItUp_Backup {
         WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'Current Zip File:' . $current_zip_file );
 
         foreach($file_list as $file) {
-            $item     = $target_root .'/' .utf8_decode( $file->item );
+            $item     = $target_root .'/' .mb_convert_encoding( $file->item, 'ISO-8859-1', 'UTF-8' );
 
             //validate file exists in zip
             if (false===$zip->validate_file($item)) {
@@ -1028,7 +1028,7 @@ class WPBackItUp_Backup {
 
         $file_size_counter = 0;
 		foreach($file_list as $file) {
-			$item = $source_root. '/' .utf8_decode($file->item);
+			$item = $source_root. '/' .mb_convert_encoding($file->item, 'ISO-8859-1', 'UTF-8');
 			WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File:' .$item);
 
 			clearstatcache();
@@ -1090,7 +1090,7 @@ class WPBackItUp_Backup {
 		$zip_file_path = sprintf('%s%s-%s-%s.zip',$this->backup_project_path,$this->backup_name,$suffix,$batch_id);
 		$zip = new WPBackItUp_Zip($this->log_name,$zip_file_path);
 		foreach($file_list as $item) {
-			$item = utf8_decode($item);
+			$item = mb_convert_encoding($item, 'ISO-8859-1', 'UTF-8');
 			WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File:' . $item );
 
 			//skip it if folder
@@ -1150,7 +1150,7 @@ class WPBackItUp_Backup {
 		//create/open the zip file
 		$zip = new WPBackItUp_Zip($this->log_name,$zip_file_path);
 
-		$file_path = utf8_decode($file_path);
+		$file_path = mb_convert_encoding($file_path, 'ISO-8859-1', 'UTF-8');
 		WPBackItUp_Logger::log_info($this->log_name,__METHOD__,'File:' . $file_path );
 
 		//replace the source path with the target

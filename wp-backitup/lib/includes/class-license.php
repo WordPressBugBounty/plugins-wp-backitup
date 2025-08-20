@@ -624,6 +624,7 @@ class WPBackItUp_License {
 					$data['license_status_message'] = __('License has expired.', 'wp-backitup');
 
 					$renew_link = esc_url(sprintf('%s/checkout?edd_license_key=%s&download_id=679&nocache=true&utm_medium=plugin&utm_source=wp-backitup&utm_campaign=premium&utm_content=license&utm_term=license+expired', WPBACKITUP__SECURESITE_URL,$license));
+					/* translators: %s: URL to license renewal page */
 					$license_expired_notice = sprintf( __('Your license has expired. Please <a href="%s" target="blank">renew</a> now for another year of <strong>product updates</strong> and access to our <strong>world class support</strong> team.','wp-backitup'),$renew_link);
 
 					// adding license expired notice

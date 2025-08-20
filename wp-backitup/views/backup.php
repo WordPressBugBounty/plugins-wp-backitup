@@ -205,7 +205,7 @@ function scan_import_backups($backup_dir){
 
 <div class="wpbackitup-topbar">
     <a class="wpbackitup-logo" title="WPBackItUp" target="_blank" href="http://www.wpbackitup.com">
-    <img height="60" src="<?php echo WPBACKITUP__PLUGIN_URL . "images/wpbackitup-logo-small.png";?>">
+    <img height="60" src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . "images/wpbackitup-logo-small.png" );?>"
     </a>
     <h2>WPBackItUp Backup &amp; Restore </h2>
     <?php // Show the review button only when user has more than two successfull backup or restore
@@ -224,12 +224,12 @@ function scan_import_backups($backup_dir){
   if( !(false === $admin_notices) && count($admin_notices)>0){
 
 	echo(
-	'<div style="overflow: hidden;" class="notice-'.$admin_notices[0]['message_type'].' notice" id="wp-backitup-notification-widget">
+	'<div style="overflow: hidden;" class="notice-'. esc_attr($admin_notices[0]['message_type']) .' notice" id="wp-backitup-notification-widget">
 	  <div style="float:left;" id="wp-backitup-notification-widget-message" >
-	    <p>'. __($admin_notices[0]['message'],'wp-backitup') .'</p>
+	    <p>'. wp_kses_post($admin_notices[0]['message']) .'</p>
 	  </div>');
 
-	  echo('<div style="float:right;"><p><a id="wp-backitup-notification-widget-close"><i style="float:right" class="fas fa-times-circle"> ' . __('Dismiss', 'wp-backitup') . '</i></a></p></div>
+	  echo('<div style="float:right;"><p><a id="wp-backitup-notification-widget-close"><span style="float:right" class="dashicons dashicons-dismiss"> ' . esc_html__('Dismiss', 'wp-backitup') . '</span></a></p></div>
 	</div>');
   }
 
@@ -238,12 +238,16 @@ function scan_import_backups($backup_dir){
 		ob_start(); ?>
 		<div class="notice notice-error is-dismissible">
 			<p>
-				<?php printf(__("WPBackItUp Premium must be installed with this release.  Please contact <a href='%s' target='_blank'>support</a> for instructions on how to download and install WPBackItUp Premium.",'wp-backitup'),"http://support.wpbackitup.com/support/tickets/new'"); ?>
-				<br/><?php printf(__('See our knowledge base %s article %s to find out why you are seeing this message.','wp-backitup'),"<a href='https://wpbackitup.freshdesk.com/support/solutions/articles/12000023567-wpbackitup-premium-must-be-reinstalled-with-this-release' target='_blank'>","</a>"); ?>
+				<?php 
+				/* translators: %s: URL to support page */
+				printf(wp_kses_post(__("WPBackItUp Premium must be installed with this release.  Please contact <a href='%s' target='_blank'>support</a> for instructions on how to download and install WPBackItUp Premium.",'wp-backitup')), esc_url("http://support.wpbackitup.com/support/tickets/new")); ?>
+				<br/><?php 
+				/* translators: %1$s: opening link tag, %2$s: closing link tag */
+				printf(wp_kses_post(__('See our knowledge base %1$s article %2$s to find out why you are seeing this message.','wp-backitup')),"<a href='" . esc_url('https://wpbackitup.freshdesk.com/support/solutions/articles/12000023567-wpbackitup-premium-must-be-reinstalled-with-this-release') . "' target='_blank'>","</a>"); ?>
 			</p>
 		</div>
 		<?php
-		echo ob_get_clean();//flush the buffer
+		echo wp_kses_post(ob_get_clean());//flush the buffer
 	}
 ?>
 
@@ -252,23 +256,25 @@ function scan_import_backups($backup_dir){
 if (!$backup_folder_exists) {
     echo(
     '<div style="overflow: hidden;" class="error" id="wp-backitup-notification-parent" class="updated">
-        <div style="float:left;" id="wp-backitup-notification-message" ><p><strong>' . __('Error','wp-backitup') . ':</strong> ' .
-            sprintf(__('Backup folder does not exist. Please contact %s for assistance.', 'wp-backitup'), WPBackItUp_Utility::get_anchor_with_utm(__('support','wp-backitup'),'support','backup+error','no+backup+folder')) );
+        <div style="float:left;" id="wp-backitup-notification-message" ><p><strong>' . esc_html__('Error','wp-backitup') . ':</strong> ' .
+            sprintf(
+            /* translators: %s: Link to support page */
+            esc_html__('Backup folder does not exist. Please contact %s for assistance.', 'wp-backitup'), wp_kses_post(WPBackItUp_Utility::get_anchor_with_utm(esc_html__('support','wp-backitup'),'support','backup+error','no+backup+folder'))) );
     echo('</p></div>');
 
-    echo('<div style="float:right;"><p><a id="wp-backitup-notification-close"><i style="float:right" class="fas fa-times-circle"> ' . __('Close', 'wp-backitup') . '</i></a></p></div>
+    echo('<div style="float:right;"><p><a id="wp-backitup-notification-close"><span style="float:right" class="dashicons dashicons-dismiss"> ' . esc_html__('Close', 'wp-backitup') . '</span></a></p></div>
     </div>');
 } else{
     echo(
     '<div style="overflow: hidden; display:none" id="wp-backitup-notification-parent" class="updated">
         <div style="float:left;" id="wp-backitup-notification-message" ></div>
-        <div style="float:right;"><p><a id="wp-backitup-notification-close"><i style="float:right" class="fas fa-times-circle"> ' . __('Close', 'wp-backitup') . '</i></a></p></div>
+        <div style="float:right;"><p><a id="wp-backitup-notification-close"><span style="float:right" class="dashicons dashicons-dismiss"> ' . esc_html__('Close', 'wp-backitup') . '</span></a></p></div>
     </div>'
     );
 }
 ?>
 
-<script type="text/javascript">var __namespace = "<?php echo($namespace); ?>";</script>
+<script type="text/javascript">var __namespace = "<?php echo esc_js($namespace); ?>";</script>
 <div class="wrap" id="wpbackitup-core-backup" v-cloak>
   <h2><?php //echo $page_title; ?></h2>
 
@@ -276,29 +282,33 @@ if (!$backup_folder_exists) {
 
     <!--Manual Backups-->
     <div class="widget">
-      <h3><i class="fas fa-cogs"></i> <?php _e('Backup', 'wp-backitup'); ?></h3>
-      <p><b><?php _e('Click the backup button to create a zipped backup file of this site\'s database, plugins, themes and settings.','wp-backitup') ?></b></p>
-      <p><?php _e('Once your backup file has been created it will appear in the available backups section below. This file may remain on your hosting providers server but we recommend that you download and save it somewhere safe.', 'wp-backitup') ?></p>
-      <p> <?php _e('WPBackItUp premium customers can use these backup files to perform an automated restore of their site.', 'wp-backitup') ?></p>
+      <h3><span class="dashicons dashicons-admin-settings"></span> <?php esc_html_e('Backup', 'wp-backitup'); ?></h3>
+      <p><b><?php esc_html_e('Click the backup button to create a zipped backup file of this site\'s database, plugins, themes and settings.','wp-backitup') ?></b></p>
+      <p><?php esc_html_e('Once your backup file has been created it will appear in the available backups section below. This file may remain on your hosting providers server but we recommend that you download and save it somewhere safe.', 'wp-backitup') ?></p>
+      <p> <?php esc_html_e('WPBackItUp premium customers can use these backup files to perform an automated restore of their site.', 'wp-backitup') ?></p>
       <p>
           <?php if ($backup_folder_exists) :?>
-            <input type="submit" id="backup-button" class="backup-button button-primary" value="<?php _e("Backup", 'wp-backitup') ?>"/>
-            <input type="submit" id="cancel-button" class="button-red cancel-button button-secondary button-hidden" value="<?php _e("Cancel", 'wp-backitup') ?>"/>
+            <input type="submit" id="backup-button" class="backup-button button-primary" value="<?php esc_attr_e("Backup", 'wp-backitup') ?>"/>
+            <input type="submit" id="cancel-button" class="button-red cancel-button button-secondary button-hidden" value="<?php esc_attr_e("Cancel", 'wp-backitup') ?>"/>
 	        <?php do_action('wpbackitup_render_advanced_scheduler'); ?>
-            <img class="backup-icon status-icon" src="<?php echo WPBACKITUP__PLUGIN_URL . "/images/loader.gif"; ?>" height="16" width="16" />
+            <img class="backup-icon status-icon" src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . "/images/loader.gif" ); ?>" height="16" width="16" />
           <?php endif; ?>
       </p>
       <?php
 
-      echo apply_filters( 'wpbackitup_show_active',
-          '<p> * ' . sprintf(__('WPBackItUp lite customers may use these backup files to manually restore their site.  Please visit %s for manual restore instructions.', 'wp-backitup'), WPBackItUp_Utility::get_anchor_with_utm('support.wpbackitup.com','support/solutions/articles/5000676459-how-to-manually-restore-your-wordpress-database','backup','manual+restore','http://support.wpbackitup.com')) .'</p>'
-      ,false);
+      echo wp_kses_post(apply_filters( 'wpbackitup_show_active',
+          '<p> * ' . sprintf(
+          /* translators: %s: Link to support page */
+          esc_html__('WPBackItUp lite customers may use these backup files to manually restore their site.  Please visit %s for manual restore instructions.', 'wp-backitup'), WPBackItUp_Utility::get_anchor_with_utm('support.wpbackitup.com','support/solutions/articles/5000676459-how-to-manually-restore-your-wordpress-database','backup','manual+restore','http://support.wpbackitup.com')) .'</p>'
+      ,false));
 
         if ($this->successful_backup_count()>=10) {
-          echo apply_filters( 'wpbackitup_show_active',
-          '*' . sprintf(__('Want to schedule your backups? Upgrade to %s and automate your backups today!', 'wp-backitup'), WPBackItUp_Utility::get_anchor_with_utm(__('premium','wp-backitup'),'pricing-purchase','get+license','purchase'))
+          echo wp_kses_post(apply_filters( 'wpbackitup_show_active',
+          '*' . sprintf(
+          /* translators: %s: Link to premium page */
+          esc_html__('Want to schedule your backups? Upgrade to %s and automate your backups today!', 'wp-backitup'), WPBackItUp_Utility::get_anchor_with_utm(esc_html__('premium','wp-backitup'),'pricing-purchase','get+license','purchase'))
           ,false
-          );
+          ));
         }
         ?>
     </div>
@@ -307,17 +317,17 @@ if (!$backup_folder_exists) {
 
     <!--Available Backups section-->
     <div class="widget">
-      <h3><i class="fas fa-cloud-download-alt"></i> <?php _e('Available Backups', 'wp-backitup'); ?></h3>
+      <h3><span class="dashicons dashicons-download"></span> <?php esc_html_e('Available Backups', 'wp-backitup'); ?></h3>
 
     <!--View Log Form-->
-    <form id = "viewlog" name = "viewlog" action="<?php echo get_admin_url(),"admin-post.php"; ?>" method="post">
+    <form id = "viewlog" name = "viewlog" action="<?php echo esc_url( get_admin_url() . "admin-post.php" ); ?>" method="post">
         <input type="hidden" name="action" value="viewlog">
         <input type="hidden" id="backup_name" name="backup_name" value="">
         <?php wp_nonce_field($this->namespace . "-viewlog"); ?>
     </form>
 
 
-    <form id = "download_backup" name = "download_backup" action="<?php echo get_admin_url(),"admin-post.php"; ?>" method="post">
+    <form id = "download_backup" name = "download_backup" action="<?php echo esc_url( get_admin_url() . "admin-post.php" ); ?>" method="post">
 	    <input type="hidden" name="action" value="download_backup">
 	    <input type="hidden" id="backup_file" name="backup_file" value="">
 	    <?php wp_nonce_field($this->namespace . "-download_backup"); ?>
@@ -326,11 +336,11 @@ if (!$backup_folder_exists) {
       <table class="widefat" id="datatable">
           <thead>
             <tr>
-                <th><?php _e('Backup', 'wp-backitup') ?></th>
-                <th><?php _e('Type', 'wp-backitup') ?></th>
-                <th><?php _e('Date', 'wp-backitup') ?></th>
-                <th><?php _e('Duration', 'wp-backitup') ?></th>
-                <th><?php _e('Status', 'wp-backitup') ?></th>
+                <th><?php esc_html_e('Backup', 'wp-backitup') ?></th>
+                <th><?php esc_html_e('Type', 'wp-backitup') ?></th>
+                <th><?php esc_html_e('Date', 'wp-backitup') ?></th>
+                <th><?php esc_html_e('Duration', 'wp-backitup') ?></th>
+                <th><?php esc_html_e('Status', 'wp-backitup') ?></th>
                 <th>&nbsp;</th>
 	            <th>&nbsp;</th>
             </tr>
@@ -362,17 +372,17 @@ if (!$backup_folder_exists) {
 
               switch ($job->getJobStatus()) {
                   case WPBackItUp_Job::COMPLETE:
-                      $status = __("Success", 'wp-backitup');
+                      $status = esc_html__("Success", 'wp-backitup');
                       break;
                   case WPBackItUp_Job::ACTIVE:
-                      $status = __("Active", 'wp-backitup');
+                      $status = esc_html__("Active", 'wp-backitup');
 
                       //Dont display active backups at this time
                       continue 2;
 
                       break;
                   default:
-                    $status = __("Error", 'wp-backitup');
+                    $status = esc_html__("Error", 'wp-backitup');
 
               }
 
@@ -383,14 +393,14 @@ if (!$backup_folder_exists) {
               }
             ?>
               <tr is="backup-row"
-                  name="<?php echo $backup_name; ?>"
-                  type="<?php echo $backup_run_type; ?>"
-                  date="<?php echo $file_datetime; ?>"
-                  duration="<?php echo $job->getJobDurationFormatted() ?>"
-                  status="<?php echo $status; ?>"
-                  row="<?php echo $i ?>"
-                  job-id="<?php echo $job->getJobId(); ?>"
-                  zip-exist="<?php echo $zip_exist ?>"
+                  name="<?php echo esc_attr($backup_name); ?>"
+                  type="<?php echo esc_attr($backup_run_type); ?>"
+                  date="<?php echo esc_attr($file_datetime); ?>"
+                  duration="<?php echo esc_attr($job->getJobDurationFormatted()); ?>"
+                  status="<?php echo esc_attr($status); ?>"
+                  row="<?php echo esc_attr($i); ?>"
+                  job-id="<?php echo esc_attr($job->getJobId()); ?>"
+                  zip-exist="<?php echo esc_attr($zip_exist); ?>"
               >
               </tr>
             <?php
@@ -399,43 +409,45 @@ if (!$backup_folder_exists) {
         }
         else
         {
-          echo '<tr id="nofiles"><td colspan="3">' . __('No backup archives found.','wp-backitup'). '</td></tr>';
+          echo '<tr id="nofiles"><td colspan="3">' . esc_html__('No backup archives found.','wp-backitup'). '</td></tr>';
         }
         ?>
           </tbody>
       </table>
 
       <?php
-          echo apply_filters( 'wpbackitup_show_active',
-              '<p>* ' . sprintf(__('The automated restore feature is only available to WPBackItUp premium customers.  Please visit %s to get WPBackItUp risk free for 30 days.', 'wp-backitup'), WPBackItUp_Utility::get_anchor_with_utm('www.wpbackitup.com','pricing-purchase','available+backups','risk+free')) . '</p>'
+          echo wp_kses_post(apply_filters( 'wpbackitup_show_active',
+              '<p>* ' . sprintf(
+              /* translators: %s: Link to pricing page */
+              esc_html__('The automated restore feature is only available to WPBackItUp premium customers.  Please visit %s to get WPBackItUp risk free for 30 days.', 'wp-backitup'), WPBackItUp_Utility::get_anchor_with_utm('www.wpbackitup.com','pricing-purchase','available+backups','risk+free')) . '</p>'
               ,false
-          );
+          ));
       ?>
     </div>
 
     <div id="status" class="widget">
-      <h3><i class="far fa-check-square"></i> <?php _e('Status', 'wp-backitup'); ?></h3>
+      <h3><span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e('Status', 'wp-backitup'); ?></h3>
 
       <!--default status message-->
       <ul class="default-status">
-        <li><?php _e('Nothing to report', 'wp-backitup'); ?></li>
+        <li><?php esc_html_e('Nothing to report', 'wp-backitup'); ?></li>
       </ul>
 
       <!--backup status messages-->
       <ul class="backup-status">
-        <li class="preparing"><?php _e('Preparing for backup', 'wp-backitup'); ?>...<span class='status-icon'><img class="preparing-icon" src="<?php echo WPBACKITUP__PLUGIN_URL . "/images/loader.gif"; ?>" height="16" width="16" /></span><span class='status'><?php _e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php _e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php _e('Warning', 'wp-backitup'); ?></span></li>
-        <li class='create_inventory'><?php _e('Creating inventory of files to backup', 'wp-backitup'); ?>...<span class='status-icon'><img class="create_inventory-icon" src="<?php echo WPBACKITUP__PLUGIN_URL . "/images/loader.gif"; ?>" height="16" width="16" /></span><span class='status'><?php _e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php _e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php _e('Warning', 'wp-backitup'); ?></span></li>
-        <li class='exportdb'><?php _e('Exporting database', 'wp-backitup'); ?>...<span class='status-icon'><img class="exportdb-icon" src="<?php echo WPBACKITUP__PLUGIN_URL . "/images/loader.gif"; ?>" height="16" width="16" /></span><span class='status'><?php _e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php _e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php _e('Warning', 'wp-backitup'); ?></span></li>
-        <li class='backupdb'><?php _e('Backing up database', 'wp-backitup'); ?>...<span class='status-icon'><img class="backupdb-icon" src="<?php echo WPBACKITUP__PLUGIN_URL . "/images/loader.gif"; ?>" height="16" width="16" /></span><span class='status'><?php _e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php _e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php _e('Warning', 'wp-backitup'); ?></span></li>
-	    <li class='backup_themes'><?php _e('Backing up themes', 'wp-backitup'); ?>...<span class='status-icon'><img class="backup_themes-icon" src="<?php echo WPBACKITUP__PLUGIN_URL . "/images/loader.gif"; ?>" height="16" width="16" /></span><span class='status'><?php _e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php _e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php _e('Warning', 'wp-backitup'); ?></span></li>
-	    <li class='backup_plugins'><?php _e('Backing up plugins', 'wp-backitup'); ?>...<span class='status-icon'><img class="backup_plugins-icon" src="<?php echo WPBACKITUP__PLUGIN_URL . "/images/loader.gif"; ?>" height="16" width="16" /></span><span class='status'><?php _e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php _e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php _e('Warning', 'wp-backitup'); ?></span></li>
-	    <li class='backup_uploads'><?php _e('Backing up uploads', 'wp-backitup'); ?>...<span class='status-icon'><img class="backup_uploads-icon" src="<?php echo WPBACKITUP__PLUGIN_URL . "/images/loader.gif"; ?>" height="16" width="16" /></span><span class='status'><?php _e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php _e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php _e('Warning', 'wp-backitup'); ?></span></li>
-	    <li class='backup_other'><?php _e('Backing up everything else', 'wp-backitup'); ?>...<span class='status-icon'><img class="backup_other-icon" src="<?php echo WPBACKITUP__PLUGIN_URL . "/images/loader.gif"; ?>" height="16" width="16" /></span><span class='status'><?php _e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php _e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php _e('Warning', 'wp-backitup'); ?></span></li>
-	    <li class='validate_backup'><?php _e('Validating backup', 'wp-backitup'); ?>...<span class='status-icon'><img class="validate_backup-icon" src="<?php echo WPBACKITUP__PLUGIN_URL . "/images/loader.gif"; ?>" height="16" width="16" /></span><span class='status'><?php _e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php _e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php _e('Warning', 'wp-backitup'); ?></span></li>
+        <li class="preparing"><?php esc_html_e('Preparing for backup', 'wp-backitup'); ?>...<span class='status-icon'><img class="preparing-icon" src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . "/images/loader.gif" ); ?>" height="16" width="16" /></span><span class='status'><?php esc_html_e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php esc_html_e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php esc_html_e('Warning', 'wp-backitup'); ?></span></li>
+        <li class='create_inventory'><?php esc_html_e('Creating inventory of files to backup', 'wp-backitup'); ?>...<span class='status-icon'><img class="create_inventory-icon" src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . "/images/loader.gif" ); ?>" height="16" width="16" /></span><span class='status'><?php esc_html_e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php esc_html_e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php esc_html_e('Warning', 'wp-backitup'); ?></span></li>
+        <li class='exportdb'><?php esc_html_e('Exporting database', 'wp-backitup'); ?>...<span class='status-icon'><img class="exportdb-icon" src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . "/images/loader.gif" ); ?>" height="16" width="16" /></span><span class='status'><?php esc_html_e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php esc_html_e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php esc_html_e('Warning', 'wp-backitup'); ?></span></li>
+        <li class='backupdb'><?php esc_html_e('Backing up database', 'wp-backitup'); ?>...<span class='status-icon'><img class="backupdb-icon" src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . "/images/loader.gif" ); ?>" height="16" width="16" /></span><span class='status'><?php esc_html_e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php esc_html_e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php esc_html_e('Warning', 'wp-backitup'); ?></span></li>
+	    <li class='backup_themes'><?php esc_html_e('Backing up themes', 'wp-backitup'); ?>...<span class='status-icon'><img class="backup_themes-icon" src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . "/images/loader.gif" ); ?>" height="16" width="16" /></span><span class='status'><?php esc_html_e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php esc_html_e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php esc_html_e('Warning', 'wp-backitup'); ?></span></li>
+	    <li class='backup_plugins'><?php esc_html_e('Backing up plugins', 'wp-backitup'); ?>...<span class='status-icon'><img class="backup_plugins-icon" src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . "/images/loader.gif" ); ?>" height="16" width="16" /></span><span class='status'><?php esc_html_e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php esc_html_e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php esc_html_e('Warning', 'wp-backitup'); ?></span></li>
+	    <li class='backup_uploads'><?php esc_html_e('Backing up uploads', 'wp-backitup'); ?>...<span class='status-icon'><img class="backup_uploads-icon" src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . "/images/loader.gif" ); ?>" height="16" width="16" /></span><span class='status'><?php esc_html_e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php esc_html_e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php esc_html_e('Warning', 'wp-backitup'); ?></span></li>
+	    <li class='backup_other'><?php esc_html_e('Backing up everything else', 'wp-backitup'); ?>...<span class='status-icon'><img class="backup_other-icon" src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . "/images/loader.gif" ); ?>" height="16" width="16" /></span><span class='status'><?php esc_html_e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php esc_html_e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php esc_html_e('Warning', 'wp-backitup'); ?></span></li>
+	    <li class='validate_backup'><?php esc_html_e('Validating backup', 'wp-backitup'); ?>...<span class='status-icon'><img class="validate_backup-icon" src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . "/images/loader.gif" ); ?>" height="16" width="16" /></span><span class='status'><?php esc_html_e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php esc_html_e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php esc_html_e('Warning', 'wp-backitup'); ?></span></li>
         <?php  if (true===$WPBackitup->encrypt_files()) : ?>
-              <li class='encrypt'><?php _e('Encrypting sensitive files', 'wp-backitup'); ?>...<span class='status-icon'><img class="encrypt-icon" src="<?php echo WPBACKITUP__PLUGIN_URL . "/images/loader.gif"; ?>" height="16" width="16" /></span><span class='status'><?php _e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php _e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php _e('Warning', 'wp-backitup'); ?></span></li>
+              <li class='encrypt'><?php esc_html_e('Encrypting sensitive files', 'wp-backitup'); ?>...<span class='status-icon'><img class="encrypt-icon" src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . "/images/loader.gif" ); ?>" height="16" width="16" /></span><span class='status'><?php esc_html_e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php esc_html_e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php esc_html_e('Warning', 'wp-backitup'); ?></span></li>
         <?php endif ?>
-        <li class='finalize_backup'><?php _e('Finalizing backup', 'wp-backitup'); ?>...<span class='status-icon'><img class="finalize_backup-icon" src="<?php echo WPBACKITUP__PLUGIN_URL . "/images/loader.gif"; ?>" height="16" width="16" /></span><span class='status'><?php _e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php _e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php _e('Warning', 'wp-backitup'); ?></span></li>
+        <li class='finalize_backup'><?php esc_html_e('Finalizing backup', 'wp-backitup'); ?>...<span class='status-icon'><img class="finalize_backup-icon" src="<?php echo esc_url( WPBACKITUP__PLUGIN_URL . "/images/loader.gif" ); ?>" height="16" width="16" /></span><span class='status'><?php esc_html_e('Done', 'wp-backitup'); ?></span><span class='fail error'><?php esc_html_e('Failed', 'wp-backitup'); ?></span><span class='wpbackitup-warning'><?php esc_html_e('Warning', 'wp-backitup'); ?></span></li>
       </ul>
 
       <!--Error status messages-->
@@ -445,7 +457,7 @@ if (!$backup_folder_exists) {
 
          <!--success messages-->
   	  <ul class="backup-success">
-  		  <li class='isa_success'><?php _e('Backup completed successfully', 'wp-backitup'); ?>.</li>
+  		  <li class='isa_success'><?php esc_html_e('Backup completed successfully', 'wp-backitup'); ?>.</li>
   	  </ul>
 
         <ul class="backup-warning">
@@ -454,7 +466,7 @@ if (!$backup_folder_exists) {
 
         <!--cancelled messages-->
         <ul class="backup-cancelled">
-          <li class='isa_cancelled'><?php _e('Backup Cancelled', 'wp-backitup'); ?>.</li>
+          <li class='isa_cancelled'><?php esc_html_e('Backup Cancelled', 'wp-backitup'); ?>.</li>
       </ul>
 
 
@@ -466,18 +478,22 @@ if (!$backup_folder_exists) {
 
 
           <div class="widget">
-              <h3 class="promo"><?php _e('Backups', 'wp-backitup'); ?> <span style="float: right"><?php _e('Version ' .$version, 'wp-backitup'); ?></span></h3>
+              <h3 class="promo"><?php esc_html_e('Backups', 'wp-backitup'); ?> <span style="float: right"><?php 
+              /* translators: %s: Version number */
+              printf( esc_html__('Version %s', 'wp-backitup'), esc_html( $version ) ); ?></span></h3>
               <?php if ($this->successful_backup_count()<1) : ?>
-                  <p><?php _e('Welcome to WPBackItUp!', 'wp-backitup') ?><br/>  <?php _e('The simplest way to backup your WordPress site.', 'wp-backitup') ?></p>
-                  <p><?php _e('Getting started is easy, just click the backup button on the left side of this page.', 'wp-backitup') ?></p>
+                  <p><?php esc_html_e('Welcome to WPBackItUp!', 'wp-backitup') ?><br/>  <?php esc_html_e('The simplest way to backup your WordPress site.', 'wp-backitup') ?></p>
+                  <p><?php esc_html_e('Getting started is easy, just click the backup button on the left side of this page.', 'wp-backitup') ?></p>
               <?php endif ?>
 
               <?php if ($this->successful_backup_count()>=1) : ?>
-                <p><?php printf(__('Congratulations! You have performed <span style="font-weight:bold;font-size:medium;color: green">%s</span> successful backups.', 'wp-backitup'),$this->successful_backup_count()) ?></p>
-                <p><span style="font-weight:bold;font-size:medium"><?php _e('Tips', 'wp-backitup') ?></span>
-                   <br/>1)&nbsp;<?php _e('Backup your site at least once per week','wp-backitup') ?>
-                   <br/>2)&nbsp;<?php _e('Download all your backups and store them somewhere safe', 'wp-backitup') ?>
-                   <br/>3)&nbsp;<?php _e('Verify your backup files are good by taking a look at what\'s inside', 'wp-backitup') ?>
+                <p><?php 
+                /* translators: %s: Number of successful backups */
+                printf(__('Congratulations! You have performed <span style="font-weight:bold;font-size:medium;color: green">%s</span> successful backups.', 'wp-backitup'), esc_html($this->successful_backup_count())) ?></p>
+                <p><span style="font-weight:bold;font-size:medium"><?php esc_html_e('Tips', 'wp-backitup') ?></span>
+                   <br/>1)&nbsp;<?php esc_html_e('Backup your site at least once per week','wp-backitup') ?>
+                   <br/>2)&nbsp;<?php esc_html_e('Download all your backups and store them somewhere safe', 'wp-backitup') ?>
+                   <br/>3)&nbsp;<?php esc_html_e('Verify your backup files are good by taking a look at what\'s inside', 'wp-backitup') ?>
                 </p>
               <?php endif ?>
 
@@ -490,13 +506,13 @@ if (!$backup_folder_exists) {
        } else {
           if ( false === $is_ce_registered) { ?>
               <div class="widget">
-                  <h3 class="promo"><span><?php _e('Register WPBackItUp', 'wp-backitup'); ?></span></h3>
-                  <form action="" method="post" id="<?php echo $namespace; ?>-form">
+                  <h3 class="promo"><span><?php esc_html_e('Register WPBackItUp', 'wp-backitup'); ?></span></h3>
+                  <form action="" method="post" id="<?php echo esc_attr($namespace); ?>-form">
                       <?php wp_nonce_field($namespace . "-register-ce"); ?>
-                      <p><?php _e('Enter your name and email address below to receive <b>special offers</b> and access to our world class <b>support</b> team.  <br />', 'wp-backitup'); ?></p>
-                      <input type="text" name="license_name" id="license_name" placeholder="<?php _e('name','wp-backitup')?>" /><br/>
-                      <input type="text" name="license_email" id="license_email" placeholder="<?php _e('email address','wp-backitup')?>" /><br/>
-                      <div class="submit"><input type="submit" name="Submit" class="button-secondary" value="<?php _e("Register", 'wp-backitup') ?>" /></div>
+                      <p><?php printf( wp_kses_post( __('Enter your name and email address below to receive <b>special offers</b> and access to our world class <b>support</b> team. <br />', 'wp-backitup') ) ); ?></p>
+                      <input type="text" name="license_name" id="license_name" placeholder="<?php esc_attr_e('name','wp-backitup')?>" /><br/>
+                      <input type="text" name="license_email" id="license_email" placeholder="<?php esc_attr_e('email address','wp-backitup')?>" /><br/>
+                      <div class="submit"><input type="submit" name="Submit" class="button-secondary" value="<?php esc_attr_e("Register", 'wp-backitup') ?>" /></div>
                   </form>
               </div>
           <?php } ?>
@@ -504,24 +520,24 @@ if (!$backup_folder_exists) {
 
     <!-- Display links widget -->
     <div class="widget">
-          <h3 class="promo"><?php _e('Useful Links', 'wp-backitup'); ?></h3>
+          <h3 class="promo"><?php esc_html_e('Useful Links', 'wp-backitup'); ?></h3>
           <ul>
-              <li><?php echo(WPBackItUp_Utility::get_anchor_with_utm(__('Getting Started Video','wp-backitup'),'support/solutions/articles/5000691574-wp-backitup-getting-started-video','useful+links','getting+started+video',WPBACKITUP__SUPPORTSITE_URL))?></li>
+              <li><?php echo wp_kses_post(WPBackItUp_Utility::get_anchor_with_utm(esc_html__('Getting Started Video','wp-backitup'),'support/solutions/articles/5000691574-wp-backitup-getting-started-video','useful+links','getting+started+video', esc_url(WPBACKITUP__SUPPORTSITE_URL)))?></li>
 
               <?php
-                  echo apply_filters( 'wpbackitup_show_active',
-                  '<li>' .(WPBackItUp_Utility::get_anchor_with_utm(__('Your account','wp-backitup'),'account','useful+links','your+account')) . '</li>'
+                  echo wp_kses_post(apply_filters( 'wpbackitup_show_active',
+                  '<li>' .(WPBackItUp_Utility::get_anchor_with_utm(esc_html__('Your account','wp-backitup'),'account','useful+links','your+account')) . '</li>'
                   ,true
-                  );
+                  ));
               ?>
 
-              <li><?php echo(WPBackItUp_Utility::get_anchor_with_utm(__('Documentation','wp-backitup'),'support/solutions','useful+links','documentation',WPBACKITUP__SUPPORTSITE_URL))?></li>
+              <li><?php echo wp_kses_post(WPBackItUp_Utility::get_anchor_with_utm(esc_html__('Documentation','wp-backitup'),'support/solutions','useful+links','documentation', esc_url(WPBACKITUP__SUPPORTSITE_URL)))?></li>
 
-              <li><?php echo(WPBackItUp_Utility::get_anchor_with_utm(__('Feature request','wp-backitup'),'contact' ,'useful+links','feature+request'))?></li>
+              <li><?php echo wp_kses_post(WPBackItUp_Utility::get_anchor_with_utm(esc_html__('Feature request','wp-backitup'),'contact' ,'useful+links','feature+request'))?></li>
 
-	          <li><?php echo(WPBackItUp_Utility::get_anchor_with_utm(__('Blog','wp-backitup') ,'blog','blog','blog'))?></li>
+	          <li><?php echo wp_kses_post(WPBackItUp_Utility::get_anchor_with_utm(esc_html__('Blog','wp-backitup') ,'blog','blog','blog'))?></li>
 
-              <li><?php echo(WPBackItUp_Utility::get_anchor_with_utm(__('Contact','wp-backitup') ,'contact','useful+links','contact'))?></li>
+              <li><?php echo wp_kses_post(WPBackItUp_Utility::get_anchor_with_utm(esc_html__('Contact','wp-backitup') ,'contact','useful+links','contact'))?></li>
 
           </ul>
     </div>
@@ -538,28 +554,28 @@ if (!$backup_folder_exists) {
 <!-- Vue Js component from schedule modal -->
 <script type="text/x-template" id="schedule-modal-template">
 	<div class="schedule-component" style="display:inline">
-			<input @click="openModal('schedule')" type="submit" id="schedule-button" class="schedule-button button-secondary" value="<?php _e("Schedule", 'wp-backitup') ?>"/>
+			<input @click="openModal('schedule')" type="submit" id="schedule-button" class="schedule-button button-secondary" value="<?php esc_attr_e("Schedule", 'wp-backitup') ?>"/>
 
 			<!-- Schedule modals -->
 			<div class="page__schedule">
 					<ui-modal ref="schedule" title="Backup Schedule">
 							<div class="schedule-alert">
 								<ui-alert @dismiss="scheduleAlert = false" type="success" v-show="scheduleAlert">
-										<?php _e( 'Successfully Saved!', 'wp-backitup' ); ?>
+										<?php esc_html_e( 'Successfully Saved!', 'wp-backitup' ); ?>
 								</ui-alert>
 								<ui-alert @dismiss="scheduleErrorAlert = false" type="error" v-show="scheduleErrorAlert">
-										<?php _e( 'Failed to Saved!', 'wp-backitup' ); ?>
+										<?php esc_html_e( 'Failed to Saved!', 'wp-backitup' ); ?>
 								</ui-alert>
 							</div>
 
 							<div class="schedule-form">
 								 <div class="sform-element">
-										<p><?php _e('Name (Optional)','wp-backitup') ?></p>
+										<p><?php esc_html_e('Name (Optional)','wp-backitup') ?></p>
 										<el-input placeholder="Please input" v-model="name"></el-input>
 								 </div>
 
 								 <div class="sform-element">
-										<p><?php _e('Start Date','wp-backitup') ?></p>
+										<p><?php esc_html_e('Start Date','wp-backitup') ?></p>
 										<ui-datepicker
 												 placeholder="Select a date"
 												 v-model="startDate"
@@ -567,7 +583,7 @@ if (!$backup_folder_exists) {
 								 </div>
 
 								 <div class="sform-element">
-										<p><?php _e('Backup Every','wp-backitup') ?></p>
+										<p><?php esc_html_e('Backup Every','wp-backitup') ?></p>
 										 <el-select v-model="frequency" placeholder="Select">
 										    <el-option
 										      v-for="item in frequencyStrings"
@@ -581,7 +597,7 @@ if (!$backup_folder_exists) {
 								 <!-- show if daily option selected  -->
  								<div class="daily-option" v-if="frequency=='day'">
  										<div class="sform-element">
- 											 <p><?php _e('After','wp-backitup') ?></p>
+ 											 <p><?php esc_html_e('After','wp-backitup') ?></p>
  												 <el-time-select
  													 v-model="timePicker"
  													 :picker-options="{
@@ -597,7 +613,7 @@ if (!$backup_folder_exists) {
 								 <!-- Show if weekly option selected -->
 								<div class="weekly-option" v-if="frequency=='week'">
 									 <div class="sform-element">
-											<p><?php _e('Repeat On','wp-backitup') ?></p>
+											<p><?php esc_html_e('Repeat On','wp-backitup') ?></p>
 
 											<div id="pretty-scale">
 													<p-check v-model="days[0]" class="p-round p-fill p-icon" color="primary" off-color="primary-o" toggle>
@@ -646,7 +662,7 @@ if (!$backup_folder_exists) {
 									 </div>
 
 									 <div class="sform-element">
-											<p><?php _e('After','wp-backitup') ?></p>
+											<p><?php esc_html_e('After','wp-backitup') ?></p>
 												<el-time-select
 												  v-model="timePicker"
 												  :picker-options="{
@@ -662,7 +678,7 @@ if (!$backup_folder_exists) {
 								 <!-- Show if monthly option selected  -->
 								 <div class="monthly-option" v-if="frequency=='month'">
 										 <div class="sform-element">
-											 <p><?php _e('Repeat On','wp-backitup') ?></p>
+											 <p><?php esc_html_e('Repeat On','wp-backitup') ?></p>
 											 <el-select v-model="monthlyValue" placeholder="Select" value-key="label">
 												 <el-option
 													 v-for="item in monthlyStrings"
@@ -674,7 +690,7 @@ if (!$backup_folder_exists) {
 										</div>
 
 										<div class="sform-element">
- 											 <p><?php _e('After','wp-backitup') ?></p>
+ 											 <p><?php esc_html_e('After','wp-backitup') ?></p>
  												 <el-time-select
  													 v-model="timePicker"
  													 :picker-options="{
@@ -704,30 +720,30 @@ if (!$backup_folder_exists) {
 <!--Vue JS component for backup row-->
 <script type="text/x-template" id="backup-row-template">
     <tr v-bind:class="klass" v-bind:id="'row' + row">
-        <td data-th="<?php _e('Backup', 'wp-backitup') ?>" v-if="zipExist">
+        <td data-th="<?php esc_attr_e('Backup', 'wp-backitup') ?>" v-if="zipExist">
             <a v-bind:href="'#TB_inline?width=600&height=550&inlineId=' + backupParsedId" class="thickbox" title="Download Backup" v-bind:name="name" v-bind:data-jobid="jobId">
-                <i class="fas fa-download"></i>
+                <span class="dashicons dashicons-download"></span>
                 {{ name }}
             </a>
         </td>
-        <td data-th="<?php _e('Backup', 'wp-backitup') ?>" v-else>
+        <td data-th="<?php esc_attr_e('Backup', 'wp-backitup') ?>" v-else>
             {{ name }}
         </td>
 
-        <td class="word-capitalize" data-th="<?php _e('Type', 'wp-backitup') ?>"> {{ type }}</td>
+        <td class="word-capitalize" data-th="<?php esc_attr_e('Type', 'wp-backitup') ?>"> {{ type }}</td>
         <!--date-->
-        <td data-th="<?php _e('Date', 'wp-backitup') ?>">{{ date }}</td>
+        <td data-th="<?php esc_attr_e('Date', 'wp-backitup') ?>">{{ date }}</td>
 
-        <td data-th="<?php _e('Duration', 'wp-backitup') ?>">{{ duration }}</td>
+        <td data-th="<?php esc_attr_e('Duration', 'wp-backitup') ?>">{{ duration }}</td>
 
-        <td data-th="<?php _e('Status', 'wp-backitup') ?>">{{ status }}</td>
+        <td data-th="<?php esc_attr_e('Status', 'wp-backitup') ?>">{{ status }}</td>
 
 	    <?php if (true==$safe_sync_on) : ?>
         <send-cloud v-bind:visible="cloudVisible" v-bind:kloud-status="cstatus">
         </send-cloud>
 	    <?php endif ?>
         <td>
-            <a href="#" title="Delete Backup" v-bind:data-id="jobId" class="deleteRow" v-bind:id="'deleteRow'+row"><i class="far fa-trash-alt fa-2x"></i></a>
+            <a href="#" title="Delete Backup" v-bind:data-id="jobId" class="deleteRow" v-bind:id="'deleteRow'+row"><span class="dashicons dashicons-trash"></span></a>
         </td>
     </tr>
 </script>
@@ -735,32 +751,31 @@ if (!$backup_folder_exists) {
 <!--Vue Send to cloud-->
 <script type="text/x-template" id="send-to-cloud">
     <td v-if="visible">
-        <span v-if="kloudStatus == 'uploaded' " class="fa-stack" title="<?php _e('Backup safely stored in cloud', 'wp-backitup'); ?>" >
+        <span v-if="kloudStatus == 'uploaded' " title="<?php esc_attr_e('Backup safely stored in cloud', 'wp-backitup'); ?>" >
             <a href="#" @click="openModal('modal'+ jobId)">
-            <i class="fas fa-cloud fa-stack-2x" style="color:dodgerblue;"></i>
-            <i class="fas fa-check fa-stack-1x fa-inverse"></i>
+            <span class="dashicons dashicons-cloud wpb-cloud-uploaded" title="<?php esc_attr_e('Uploaded to cloud', 'wp-backitup'); ?>"></span>
             </a>
         </span>
 
-        <span v-else-if="kloudStatus == 'uploading'" class="fa-stack" title="<?php _e('Sending backup to cloud', 'wp-backitup'); ?>" >
-            <i class="fas fa-sync-alt fa-spin fa-2x fa-fw" style="color:dodgerblue;"></i>
+        <span v-else-if="kloudStatus == 'uploading'" title="<?php esc_attr_e('Sending backup to cloud', 'wp-backitup'); ?>" >
+            <span class="dashicons dashicons-update wpb-cloud-uploading"></span>
         </span>
 
-        <span v-else-if="kloudStatus == 'error'" class="fa-stack" title="<?php _e('Error sending backup to cloud', 'wp-backitup'); ?>" >
+        <span v-else-if="kloudStatus == 'error'" title="<?php esc_attr_e('Error sending backup to cloud', 'wp-backitup'); ?>" >
             <a href="#" @click="openModal('modal'+ jobId)">
-            <i class="fas fa-exclamation-circle fa-2x" style="color:#d9534f;"></i>
+            <span class="dashicons dashicons-warning wpb-cloud-error"></span>
             </a>
         </span>
 
-        <span v-else class="fa-stack">
-            <i class="fas fa-sync-alt fa-spin fa-2x fa-fw" style="color:dodgerblue;display: none"></i>
+        <span v-else>
+            <span class="dashicons dashicons-update wpb-cloud-preparing" style="display: none"></span>
             <a href="#" @click="openModal('modal'+ jobId)" title="Send to Cloud" v-bind:data-id="jobId" class="safeUploadRow" id="'safeUploadRow'+ row">
-                <i class="fas fa-cloud-upload-alt fa-2x" style="color:grey;" aria-hidden="true"></i>
+                <span class="dashicons dashicons-upload wpb-cloud-ready"></span>
             </a>
         </span>
 
         <div class="page__demo-group">
-            <ui-modal v-bind:ref="'modal'+ jobId" title="<?php _e('Upload to Cloud','wp-backitup') ?>">
+            <ui-modal v-bind:ref="'modal'+ jobId" title="<?php esc_attr_e('Upload to Cloud','wp-backitup') ?>">
                 <h2>Which cloud storage provider(s) would like to use?</h2>
                 <div v-for="provider in providers">
                     <ui-checkbox v-if="provider === 'DROPBOX' " v-model="DROPBOX[jobId]">{{ provider }}</ui-checkbox>
@@ -769,8 +784,8 @@ if (!$backup_folder_exists) {
                 </div>
 
                 <div slot="footer">
-                    <ui-button color="primary" @click="saveIndProviders(jobId)"><?php _e('Save', 'wp-backitup'); ?></ui-button>
-                    <ui-button @click="closeModal('modal'+ jobId)"><?php _e('Close', 'wp-backitup'); ?></ui-button>
+                    <ui-button color="primary" @click="saveIndProviders(jobId)"><?php esc_html_e('Save', 'wp-backitup'); ?></ui-button>
+                    <ui-button @click="closeModal('modal'+ jobId)"><?php esc_html_e('Close', 'wp-backitup'); ?></ui-button>
                 </div>
             </ui-modal>
         </div>

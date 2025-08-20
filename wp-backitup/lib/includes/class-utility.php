@@ -164,12 +164,12 @@ class WPBackItUp_Utility {
 			$item = var_export($item,true);
 		}
 
-		$item = utf8_encode($item);
+		$item = mb_convert_encoding($item, 'UTF-8', 'ISO-8859-1');
 	}
 
 	public static function decode_items(&$item, $key)
 	{
-		$item = utf8_decode($item);
+		$item = mb_convert_encoding($item, 'ISO-8859-1', 'UTF-8');
 	}
 
 
