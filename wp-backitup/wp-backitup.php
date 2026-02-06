@@ -6,7 +6,7 @@
  * Description: Backup your content, settings, themes, plugins and media in just a few simple clicks.
  * Author: WPBackItUp
  * Author URI: https://www.wpbackitup.com
- * Version: 2.0.0
+ * Version: 2.1.0
  * Text Domain: wp-backitup
  *
  * License: GPLv2 or later
@@ -32,12 +32,16 @@ define( 'WPBACKITUP__NAMESPACE', 'wp-backitup' );
 define( 'WPBACKITUP__CLASSNAMESPACE', 'WPBackItUp' );
 
 define( 'WPBACKITUP__MAJOR_VERSION', 2);
-define( 'WPBACKITUP__MINOR_VERSION', 0);
+define( 'WPBACKITUP__MINOR_VERSION', 1);
 define( 'WPBACKITUP__MAINTENANCE_VERSION', 0); //Dont forget to update version in header on WP release
 define( 'WPBACKITUP__BUILD_VERSION', 0); //Used for hotfix releases
 
 define( 'WPBACKITUP__VERSION',sprintf("%d.%d.%d.%d", WPBACKITUP__MAJOR_VERSION, WPBACKITUP__MINOR_VERSION,WPBACKITUP__MAINTENANCE_VERSION,WPBACKITUP__BUILD_VERSION));
-define( 'WPBACKITUP__DB_VERSION', 4); //DATABASE VERSION
+define( 'WPBACKITUP__DB_VERSION', 5); //DATABASE VERSION - v5 adds events table for event logging system
+
+// Build metadata - automatically updated by Gulp build process
+define( 'WPBACKITUP__BUILD_TIMESTAMP', '2026-01-25 16:44' );
+define( 'WPBACKITUP__BUILD_COMMIT', '7cacc47' );
 
 define( 'WPBACKITUP__DEBUG', false );//verbose logging + unminified script
 
@@ -284,5 +288,50 @@ require_once( WPBACKITUP__PLUGIN_PATH .'/lib/includes/class-wpbackitup-admin.php
 global $WPBackitup;
 $WPBackitup = WPBackitup_Admin::get_instance();
 $WPBackitup->initialize();
+
+// Initialize Event System (v2.1.0)
+// Uses plugins_loaded hook to ensure graceful degradation if event files are missing
+// This prevents fatal errors during upgrades from pre-2.1.0 versions
+add_action('plugins_loaded', 'wpbackitup_init_event_system', 15);
+
+/**
+ * Initialize the Event System components
+ *
+ * Loads event system files with existence checks to prevent fatal errors
+ * if files are missing (e.g., during upgrade from older version).
+ *
+ * @since 2.1.0
+ */
+function wpbackitup_init_event_system() {
+    $event_files = array(
+        'class-event-database.php',
+        'class-event-logger.php',
+        'class-recommendation-engine.php',
+        'class-event-batcher.php',
+    );
+
+    $includes_path = WPBACKITUP__PLUGIN_PATH . '/lib/includes/';
+
+    // Check all required files exist before loading any
+    foreach ($event_files as $file) {
+        if (!file_exists($includes_path . $file)) {
+            // Event system files missing - log and skip initialization
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('WPBackItUp: Event system disabled - missing file: ' . $file);
+            }
+            return;
+        }
+    }
+
+    // All files exist - load the event system
+    require_once($includes_path . 'class-event-database.php');
+    require_once($includes_path . 'class-event-logger.php');
+    require_once($includes_path . 'class-recommendation-engine.php');
+    require_once($includes_path . 'class-event-batcher.php');
+
+    // Initialize the event logger singleton (registers WordPress hooks)
+    global $WPBackitup_Event_Logger;
+    $WPBackitup_Event_Logger = WPBackItUp_Event_Logger::get_instance();
+}
 
 

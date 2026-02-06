@@ -291,6 +291,61 @@
                 </div>
 
             </v-tab>
+
+            <v-tab title="<?php esc_attr_e( 'Event Logging', 'wp-backitup' ); ?>" icon="dashicons-chart-bar">
+
+                <div class="widget">
+                    <h3 class="promo">
+                        <span class="dashicons dashicons-chart-bar"></span>
+                        <?php esc_html_e('Backup Recommendations', 'wp-backitup') ?>
+                    </h3>
+                    <p><b><?php esc_html_e('Enable smart backup recommendations based on site activity.', 'wp-backitup') ?></b></p>
+                    <p><?php esc_html_e('When enabled, WPBackItUp monitors your site for important changes (plugin updates, content changes, security events) and recommends when you should create a backup.', 'wp-backitup'); ?></p>
+                    <p>
+                        <input type="checkbox" v-model="event_logging_enabled" :true-value="true" :false-value="false">
+                        <label><?php esc_html_e('Enable Event Logging and Backup Recommendations', 'wp-backitup') ?></label>
+                    </p>
+                    <div class="submit">
+                        <button class="button-primary" v-on:click="setSettings()"><?php esc_html_e("Save", 'wp-backitup') ?></button>
+                    </div>
+                </div>
+
+                <div class="widget" v-if="event_logging_enabled">
+                    <h3 class="promo">
+                        <span class="dashicons dashicons-info"></span>
+                        <?php esc_html_e('Event Statistics', 'wp-backitup') ?>
+                    </h3>
+                    <p><b><?php esc_html_e('Events captured in the last 7 days:', 'wp-backitup') ?></b></p>
+                    <table class="widefat" style="max-width: 400px;">
+                        <tr>
+                            <td><?php esc_html_e('Total Events', 'wp-backitup') ?></td>
+                            <td><strong>{{ event_stats.total_events }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td><?php esc_html_e('Updates Applied', 'wp-backitup') ?></td>
+                            <td><strong>{{ event_stats.updates_applied }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td><?php esc_html_e('Content Changes', 'wp-backitup') ?></td>
+                            <td><strong>{{ event_stats.content_changes }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td><?php esc_html_e('Security Events', 'wp-backitup') ?></td>
+                            <td><strong>{{ event_stats.security_events }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td><?php esc_html_e('Settings Changes', 'wp-backitup') ?></td>
+                            <td><strong>{{ event_stats.settings_changes }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td><?php esc_html_e('Pending Updates', 'wp-backitup') ?></td>
+                            <td><strong>{{ event_stats.pending_updates }}</strong></td>
+                        </tr>
+                    </table>
+                    <p class="description"><?php esc_html_e('Events older than 7 days are automatically deleted.', 'wp-backitup') ?></p>
+                </div>
+
+            </v-tab>
         </vue-tabs>
     </div>
 </div>

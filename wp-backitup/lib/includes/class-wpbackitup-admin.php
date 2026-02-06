@@ -75,6 +75,7 @@ class WPBackitup_Admin {
         'remove_supporting_zip_files'=>0,
         'restore_count'=>0,
         'successful_restore_count'=>0,
+        'event_logging_enabled'=>1,
     );
 
 
@@ -151,6 +152,9 @@ class WPBackitup_Admin {
 
         //Load all the resources
         add_action( 'admin_enqueue_scripts', array( &$this, 'load_resources' ) );
+
+        // Add build info to admin footer
+        add_action( 'admin_footer', array( &$this, 'admin_footer_build_info' ) );
 
         // delete transient
         add_action($ajax_prefix .'delete_transient', array( &$this,'ajax_queue_delete_transient'));
@@ -384,6 +388,61 @@ class WPBackitup_Admin {
             }
 	    }
 
+    }
+
+    /**
+     * Display build metadata in admin footer
+     * Only shows on WPBackItUp admin pages for administrators
+     *
+     * @since 2.1.0
+     */
+    public function admin_footer_build_info() {
+        // Only show on WPBackItUp admin pages
+        if( empty($_REQUEST['page']) || substr($_REQUEST['page'], 0, 11) !== 'wp-backitup') {
+            return;
+        }
+
+        // Only show to administrators
+        if( !current_user_can( 'manage_options' ) ) {
+            return;
+        }
+
+        // Get build metadata with fallback
+        $timestamp = defined('WPBACKITUP__BUILD_TIMESTAMP') ? WPBACKITUP__BUILD_TIMESTAMP : 'not set';
+        $commit = defined('WPBACKITUP__BUILD_COMMIT') ? WPBACKITUP__BUILD_COMMIT : 'not set';
+
+        // Don't display if placeholders haven't been replaced
+        if ($timestamp === '%%BUILD_TIMESTAMP%%' || $commit === '%%BUILD_COMMIT%%') {
+            return;
+        }
+
+        // Get the version number
+        $version = rtrim($this->version, '.0');
+
+        // Build the footer HTML
+        $build_info = '<div style="margin-top: 20px; padding: 10px; background: #f9f9f9; border-top: 1px solid #ddd; color: #666; font-size: 12px; text-align: center;">';
+        $build_info .= sprintf(
+            __('WPBackItUp Version %s (Build: %s | %s)', 'wp-backitup'),
+            esc_html($version),
+            esc_html($timestamp),
+            esc_html($commit)
+        );
+        $build_info .= '</div>';
+
+        /**
+         * Filter the admin footer build info HTML
+         * Allows Premium Edition (or other extensions) to append their build info
+         *
+         * @since 2.1.0
+         *
+         * @param string $build_info The build info HTML
+         * @param string $version The Community Edition version
+         * @param string $timestamp The Community Edition build timestamp
+         * @param string $commit The Community Edition git commit hash
+         */
+        $build_info = apply_filters('wpbackitup_admin_footer_build_info', $build_info, $version, $timestamp, $commit);
+
+        echo $build_info;
     }
 
     /**
@@ -1423,6 +1482,10 @@ class WPBackitup_Admin {
             'single_file_db'=> $this->get_option('single_file_db'),
             'remove_supporting_zip_files'=> $this->get_option('remove_supporting_zip_files'),
             'allow_usage_tracking'=> $tracking_allowed,
+            'event_logging_enabled'=> $this->get_option('event_logging_enabled', '1'),
+            'event_stats'=> $this->get_option('event_logging_enabled', '1') === '1'
+                ? WPBackItUp_Event_Database::get_event_stats()
+                : array('total_events' => 0, 'updates_applied' => 0, 'content_changes' => 0, 'security_events' => 0, 'settings_changes' => 0, 'pending_updates' => 0),
         );
 
         wp_send_json_success($settings);
@@ -1605,6 +1668,9 @@ class WPBackitup_Admin {
 
 	    //** Beta Updates ON/OFF **//
 	    $data['beta_updates'] = $data['beta_updates'] === 'true' ? 1: 0;
+
+	    //** Event Logging ON/OFF (v2.1.0) **//
+	    $data['event_logging_enabled'] = $data['event_logging_enabled'] === 'true' ? 1: 0;
 
 	    //** Usage Tracking ON/OFF **//
 	    $ut = new WPBackItUp_Usage();
@@ -2448,6 +2514,30 @@ class WPBackitup_Admin {
 			   exit ('WPBackItUp was not able to create the required backup and restore folders.');
 			}
 
+			// Event System WP-Cron Jobs (v2.1.0)
+			// NOTE: Timing is approximate - WP-Cron depends on site traffic, not exact scheduling
+			// "Daily at 2am/3am/4am" is aspirational based on typical site patterns
+
+			// Hourly: Aggregate content changes (post/page edits)
+			if (!wp_next_scheduled('wpbackitup_aggregate_content_changes')) {
+				wp_schedule_event(time(), 'hourly', 'wpbackitup_aggregate_content_changes');
+			}
+
+			// Daily: Check for available plugin/theme/core updates
+			if (!wp_next_scheduled('wpbackitup_check_updates')) {
+				wp_schedule_event(time(), 'daily', 'wpbackitup_check_updates');
+			}
+
+			// Daily: Clean up events older than 7 days
+			if (!wp_next_scheduled('wpbackitup_cleanup_old_events')) {
+				wp_schedule_event(time(), 'daily', 'wpbackitup_cleanup_old_events');
+			}
+
+			// Daily: Aggregate security events (failed logins)
+			if (!wp_next_scheduled('wpbackitup_aggregate_security')) {
+				wp_schedule_event(time(), 'daily', 'wpbackitup_aggregate_security');
+			}
+
        } catch (Exception $e) {
            exit( 'WPBackItUp encountered an error during activation.<br/>' . esc_html( $e->getMessage() ) );
        }
@@ -2515,6 +2605,13 @@ class WPBackitup_Admin {
         // Do deactivation actions
 
         wp_clear_scheduled_hook( 'wpbackitup_queue_scheduled_jobs');
+
+        // Event System WP-Cron cleanup (v2.1.0)
+        // Remove all scheduled event system jobs to prevent orphaned cron tasks
+        wp_clear_scheduled_hook('wpbackitup_aggregate_content_changes');
+        wp_clear_scheduled_hook('wpbackitup_check_updates');
+        wp_clear_scheduled_hook('wpbackitup_cleanup_old_events');
+        wp_clear_scheduled_hook('wpbackitup_aggregate_security');
     }
 
     /* ---------------------     PRIVATES      -----------------------------------------*/

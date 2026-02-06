@@ -224,6 +224,47 @@ function wpbackitup_update_database_routine_4($log_name) {
 	WPBackItUp_Logger::log_info($log_name,__METHOD__,'END upgrade database to V4');
 }
 
+/**
+ * DB version 4 to 5 update
+ *  - Introduce EVENTS table for event logging system (v2.1.0)
+ *
+ */
+function wpbackitup_update_database_routine_5($log_name) {
+	WPBackItUp_Logger::log_info($log_name, __METHOD__, 'Begin upgrade database to V5');
+
+	require_once( WPBACKITUP__PLUGIN_PATH . '/lib/includes/class-event-database.php' );
+
+	// Create the events table
+	$result = WPBackItUp_Event_Database::create_events_table();
+
+	if ($result) {
+		WPBackItUp_Logger::log_info($log_name, __METHOD__, 'Events table created successfully');
+
+		// Verify table exists
+		if (WPBackItUp_Event_Database::table_exists()) {
+			WPBackItUp_Logger::log_info($log_name, __METHOD__, 'Events table verified - table exists');
+
+			// Get table info for logging
+			$table_info = WPBackItUp_Event_Database::get_table_info();
+			WPBackItUp_Logger::log_info($log_name, __METHOD__, 'Events table info', var_export($table_info, true));
+		} else {
+			WPBackItUp_Logger::log_error($log_name, __METHOD__, 'Events table verification failed - table does not exist');
+		}
+	} else {
+		WPBackItUp_Logger::log_error($log_name, __METHOD__, 'Failed to create events table');
+	}
+
+	// Seed event logging enabled flag if not already set (default enabled)
+	// Note: Critical plugins/options lists are now hardcoded with filter hooks (not stored in wp_options)
+	$event_logging_option = WPBACKITUP__NAMESPACE . '_event_logging_enabled';
+	if (false === get_option($event_logging_option)) {
+		add_option($event_logging_option, true);
+		WPBackItUp_Logger::log_info($log_name, __METHOD__, 'Seeded event logging enabled flag (default: true)');
+	}
+
+	WPBackItUp_Logger::log_info($log_name, __METHOD__, 'END upgrade database to V5');
+}
+
 
 /**
  * Drop & Create the current version of the WP BAckItUp Job tables

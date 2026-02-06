@@ -233,22 +233,26 @@ function scan_import_backups($backup_dir){
 	</div>');
   }
 
+  // COMMENTED OUT: Premium warning message too aggressive for Community Edition users with old license data
+  // @see Plan: Remove Unnecessary Premium Warning Message (2025-01)
+  /*
   //Display the install Premium message if not installed.
   if( $wpbackitup_license->is_license_valid() && ! is_plugin_active('wp-backitup-premium/wp-backitup-premium.php')){
 		ob_start(); ?>
 		<div class="notice notice-error is-dismissible">
 			<p>
-				<?php 
-				/* translators: %s: URL to support page */
+				<?php
+				/* translators: %s: URL to support page * /
 				printf(wp_kses_post(__("WPBackItUp Premium must be installed with this release.  Please contact <a href='%s' target='_blank'>support</a> for instructions on how to download and install WPBackItUp Premium.",'wp-backitup')), esc_url("http://support.wpbackitup.com/support/tickets/new")); ?>
-				<br/><?php 
-				/* translators: %1$s: opening link tag, %2$s: closing link tag */
+				<br/><?php
+				/* translators: %1$s: opening link tag, %2$s: closing link tag * /
 				printf(wp_kses_post(__('See our knowledge base %1$s article %2$s to find out why you are seeing this message.','wp-backitup')),"<a href='" . esc_url('https://wpbackitup.freshdesk.com/support/solutions/articles/12000023567-wpbackitup-premium-must-be-reinstalled-with-this-release') . "' target='_blank'>","</a>"); ?>
 			</p>
 		</div>
 		<?php
 		echo wp_kses_post(ob_get_clean());//flush the buffer
 	}
+  */
 ?>
 
 

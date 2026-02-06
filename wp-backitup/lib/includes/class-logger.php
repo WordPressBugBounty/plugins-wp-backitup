@@ -48,13 +48,17 @@ class WPBackItUp_Logger {
 	 * @param $log_name Log Name
 	 * @param $function Name of calling function(__METHOD__)
 	 * @param $message Log Message (Array or object)
-	 * @param null $additional_message  (string)
+	 * @param null $additional_message  (string or array - arrays will be JSON encoded)
 	 */
 	public static function log_info($log_name, $function, $message, $additional_message = null ) {
 
 		try {
             if(self::is_logging() === true) {
                 $logger = self::getLogger($log_name);
+                // Convert arrays to JSON string to prevent KLogger str_replace error
+                if (is_array($additional_message)) {
+                    $additional_message = json_encode($additional_message);
+                }
                 $logger->log_info($function, $message, $additional_message);
             }
 
@@ -69,13 +73,17 @@ class WPBackItUp_Logger {
 	 * @param string $log_name Log Name
 	 * @param string $function Name of calling function(__METHOD__)
 	 * @param string $message Log Message (Array or object)
-	 * @param string $additional_message  (string)
+	 * @param string $additional_message  (string or array - arrays will be JSON encoded)
 	 */
 	public static function log_error($log_name, $function,$message,$additional_message=null) {
 
 		try {
             if(self::is_logging() === true) {
                 $logger = self::getLogger($log_name);
+                // Convert arrays to JSON string to prevent KLogger str_replace error
+                if (is_array($additional_message)) {
+                    $additional_message = json_encode($additional_message);
+                }
                 $logger->log_error($function, $message, $additional_message);
             }
 		}catch(Exception $e) {
@@ -89,13 +97,17 @@ class WPBackItUp_Logger {
 	 * @param $log_name Log Name
 	 * @param $function Name of calling function(__METHOD__)
 	 * @param $message Log Message (Array or object)
-	 * @param null $additional_message  (string)
+	 * @param null $additional_message  (string or array - arrays will be JSON encoded)
 	 */
 	public static function log_warning($log_name, $function,$message,$additional_message=null) {
 
 		try {
             if(self::is_logging() === true) {
                 $logger = self::getLogger($log_name);
+                // Convert arrays to JSON string to prevent KLogger str_replace error
+                if (is_array($additional_message)) {
+                    $additional_message = json_encode($additional_message);
+                }
                 $logger->log_warning($function, $message, $additional_message);
             }
 

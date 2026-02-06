@@ -71,6 +71,10 @@ if( true===$delete_all ) {
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall operations must execute immediately without caching
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin manages cleanup of its own database tables during uninstall
 	$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "wpbackitup_job_items" );
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Plugin uninstall requires direct database access to clean up plugin tables
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall operations must execute immediately without caching
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin manages cleanup of its own database tables during uninstall
+	$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "wpbackitup_events" );
 
 	error_log('wp-backitup uninstall end');
 }

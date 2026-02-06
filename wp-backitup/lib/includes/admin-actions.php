@@ -21,6 +21,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 function wpbackitup_process_actions() {
 
+	// Security: Require logged-in user with admin capabilities
+	if ( ! is_user_logged_in() || ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
 	if ( isset( $_POST['wpbackitup_action'] ) ) {
 		do_action( 'wpbackitup_' . $_POST['wpbackitup_action'], $_POST );
 	}

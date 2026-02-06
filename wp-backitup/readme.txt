@@ -3,8 +3,8 @@ Contributors: wpbackitup, cssimmon, alaminopu, imranshuvo
 Tags: backup, backups, back up,database backup, multisite backup, full backup, database, restore, migrate, clone, malware
 Requires at least: 3.8.0
 Requires PHP: 5.2.4
-Tested up to: 6.8
-Stable tag: 1.50.0
+Tested up to: 6.9
+Stable tag: 2.0.0
 Author URI: https://www.wpbackitup.com
 Donate link: https://www.wpbackitup.com
 License: GPLv2 or later
@@ -217,6 +217,25 @@ Our online documentation and full list of FAQs can be found at [support.wpbackit
 
 
 == Changelog ==
+= 2.10 =
+*Release Date - January 25, 2026
+
+* SECURITY: Fixed broken access control vulnerability in admin action dispatcher - Added authentication and authorization checks to prevent unauthenticated users from triggering admin actions
+* FEATURE : Event Logging System - Tracks plugin updates, theme updates, WordPress core updates, content changes, security events, and settings changes
+* FEATURE : New "Event Logging" settings tab with enable/disable toggle
+* FEATURE : Event Statistics Dashboard - View event counts by type (updates applied, content changes, security events, settings changes, pending updates)
+* FEATURE : Critical plugin detection - High priority alerts when security plugins (Wordfence, Sucuri, etc.) are updated
+* FEATURE : Critical settings monitoring - Alerts when important WordPress options are changed
+* FEATURE : Build Versioning System - Each build now displays version info with timestamp and git commit hash in admin footer, helping developers identify exactly which code is deployed
+* UPDATE  : Database schema updated to support event tracking (v5)
+* UPDATE  : New WP-Cron jobs for event aggregation and cleanup
+* UPDATE  : Events automatically cleaned up after 7 days for optimal performance
+* UPDATE  : Deduplication prevents redundant event logging
+* UPDATE  : Stats display optimized - queries skipped when event logging is disabled
+* UPDATE  : Added filter hook for Premium Edition integration in build versioning system
+* FIX     : Fixed logger error when passing arrays to logging methods - arrays now automatically converted to JSON
+* FIX     : Fixed Event Statistics display - Settings Changes now included so totals match sum of categories
+
 = 2.00 =
 *Release Date -  August 16, 2025
 
